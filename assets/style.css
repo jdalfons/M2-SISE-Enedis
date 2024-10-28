@@ -1,0 +1,229 @@
+/*variable couleur , je metterais au propre apres*
+
+
+/* Sidebar styles */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #3c456b; 
+    padding: 1rem;
+    transition: width 0.3s, padding 0.3s;
+    z-index: 2;
+}
+
+.sidebar.collapsed {
+    width: 80px;
+    padding: 1rem 0.5rem;  /* Réduit le padding en mode replié */
+}
+
+/* Styles pour l'en-tête (logo et titre) */
+.sidebar-header {
+    display: flex;
+    align-items: center;      
+    justify-content: start;   
+    gap: 0.5rem;              
+    margin-bottom: 1rem; 
+    cursor: pointer;
+}
+
+.logo {
+    height: 5rem;   
+        
+}
+
+#sidebar-title {
+    color: white;
+    font-size: 1.5rem;
+    transition: opacity 0.3s, margin-left 0.3s;
+}
+
+.sidebar.collapsed #sidebar-title {
+    opacity: 0;  /* Masque le texte du titre */
+}
+
+
+
+/* Navigation styles */
+.nav-link {
+    display: flex; 
+    align-items: center; 
+    justify-content: flex-start; 
+}
+
+.nav-link.active {
+   background-color: #ffd700;
+}
+
+
+.nav-link i {
+    font-size: 1rem; 
+    color: #ffffff; 
+    transition: margin-left 0.3s;
+    margin-right: 0.5rem; 
+}
+
+.nav-link span {
+    color: white;
+    font-size: 1rem;
+    transition: opacity 0.3s;
+}
+
+
+.sidebar.collapsed .nav-link span {
+    opacity: 0;  /* Masque le texte en mode replié */
+    transition: opacity 0.3s;
+}
+
+
+.sidebar.collapsed .nav-link.active {
+    background-color: transparent; /* Pas de fond lorsque la sidebar est repliée */
+}
+
+
+.nav-link:hover {
+    background-color: #3c3c3c; 
+    border-radius: 4px; 
+}
+
+/* Réduire le style actif en mode replié */
+.sidebar.collapsed .nav-link.active i {
+    color: #ffd700; 
+}
+
+
+/*style des pages*/
+
+.page-content {
+    margin-left: 250px;
+    padding: 1rem;
+    transition: margin-left 0.3s;
+}
+
+.page-content.collapsed {
+    margin-left: 80px;
+ 
+}
+
+
+/*pages homme*/
+/* Centrer le titre principal et lui donner une couleur moderne */
+.main-title {
+    text-align: center;
+    color: #1E90FF; 
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+/* Statistiques */
+.stats-section {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 0;
+}
+
+/* Définition de l'animation fade-in-up */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Application de l'animation aux blocs statistiques */
+.stat-block {
+    padding: 1.5rem;
+    border-radius: 8px;
+    width: 22%;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #e0f7e0, #fce4d6); /* Dégradé de couleur moderne */
+    
+    /* Animation */
+    opacity: 0; 
+    animation: fadeInUp 0.6s ease-out forwards;
+    animation-delay: 0.2s; 
+    
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+/* Ajustement de la marge pour l'icône et le titre */
+.stat-block i {
+    margin-right: 0.5rem; /* Espace entre l'icône et le texte */
+}
+
+.stat-block h2 {
+    margin-top: 0; /* Enlève la marge supérieure pour centrer le chiffre */
+}
+
+/* Dégradé pour les valeurs de statistiques */
+.stat-value-green {
+    color: #4CAF50;
+}
+
+.stat-value-yellow {
+    color: #FFC107;
+}
+
+.stat-value-orange {
+    color: #FF8C00;
+}
+
+.stat-value-red {
+    color: #FF4B4B;
+}
+
+
+
+
+/* Texte */
+.text-video-section h3{
+    color: #1b3d5f; /* Bleu moderne */
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+ 
+}
+
+   
+
+
+/* Conteneur principal qui organise les colonnes */
+.text-video-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Colonne de texte à gauche */
+.text-section-left {
+    width: 50%;  
+    padding-right: 1rem;
+    padding-left: 2rem;
+    padding-top: 2rem;
+}
+
+/* Colonne de vidéo à droite */
+.text-section-right {
+    width: 45%;  
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+}
+
+/* Encadrement vidéo pour meilleure visibilité */
+.video-section {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
