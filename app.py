@@ -4,14 +4,9 @@ from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 from components.sidebar import create_sidebar  # Sidebar importée depuis components
 from pages import home, prediction, map, contexte  # Importation des pages
+from config import app
 
-app = dash.Dash(
-    __name__,
-    external_stylesheets=[
-        dbc.themes.BOOTSTRAP,
-        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'  
-    ]
-)
+
 app.title = "GreenTech Solutions"
 server = app.server
 
@@ -44,7 +39,7 @@ def display_page(pathname, collapsed):
     if pathname == "/prediction":
         return prediction.render_prediction(collapsed=collapsed)
     elif pathname == "/map":
-        return map.render_map(collapsed=collapsed)
+        return map.map_page(collapsed=collapsed)
     elif pathname == "/contexte":
         return contexte.render_contexte(collapsed=collapsed)
     return home.render_home(collapsed=collapsed)
