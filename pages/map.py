@@ -19,8 +19,25 @@ dtype = {
     'Adresse_(BAN)': 'str'
 }
 
+
+fields = ['Date_réception_DPE',
+          'Etiquette_DPE',
+          'Coût_chauffage',
+          'Surface_habitable_logement',
+          'Adresse_(BAN)',
+          'Code_postal_(BAN)',
+          'Identifiant__BAN',]
+
+# Get addresses info from 69 department
+addresses_df = pd.read_csv('data/adresses-69.csv', sep=';')
+
 # Read the CSV file into a DataFrame with specified data types
-data_energy = pd.read_csv('./data/merged_data_test.csv', dtype=dtype, low_memory=False)
+data_energy = pd.read_csv('./data/data_output.csv', dtype=dtype, low_memory=False, names=fields, header=0)
+
+# Perform the merge operation
+data_energy = data_energy.merge(addresses_df, left_on='Identifiant__BAN', right_on='id', how='left')
+
+
 
 # Convert date column to datetime
 data_energy['Date_réception_DPE'] = pd.to_datetime(data_energy['Date_réception_DPE'], format="%Y-%m-%d")
@@ -32,7 +49,7 @@ data_energy = data_energy.dropna(subset=['lat', 'lon'])
 etiquet_dpe = data_energy['Etiquette_DPE'].cat.categories
 
 # Limit the data to 150 rows
-data_energy = data_energy.head(1000)
+# data_energy = data_energy.head(10000)
 
 global new_click 
 global old_click 
