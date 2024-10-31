@@ -3,7 +3,7 @@ from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 from components.sidebar import create_sidebar  # Sidebar importée depuis components
-from pages import home, prediction, map, contexte  # Importation des pages
+from pages import home, prediction, map, contexte, analytiques  # Importation des pages
 from config import app
 
 
@@ -34,7 +34,10 @@ def toggle_sidebar(n_clicks, collapsed):
     return create_sidebar(new_collapsed), new_collapsed
 
 # Callback pour le contenu de la page avec l'état collapsed 
-@app.callback(Output("page-content", "children"), [Input("url", "pathname"), Input("sidebar-collapsed", "data")])
+@app.callback(
+    Output("page-content", "children"), 
+    [Input("url", "pathname"), 
+     Input("sidebar-collapsed", "data")])
 def display_page(pathname, collapsed):
     if pathname == "/prediction":
         return prediction.render_prediction(collapsed=collapsed)
@@ -42,6 +45,8 @@ def display_page(pathname, collapsed):
         return map.map_page(collapsed=collapsed)
     elif pathname == "/contexte":
         return contexte.render_contexte(collapsed=collapsed)
+    elif pathname == "/analytiques":
+        return analytiques.render_analytiques(collapsed=collapsed)
     return home.render_home(collapsed=collapsed)
 
 if __name__ == "__main__":
