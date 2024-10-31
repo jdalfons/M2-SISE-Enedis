@@ -21,6 +21,7 @@ def create_sidebar(collapsed):
                     dbc.NavLink([html.I(className="fas fa-chart-line"), html.Span("Prédiction")], href="/prediction", active="exact"),
                     dbc.NavLink([html.I(className="fas fa-map-marker-alt"), html.Span("Map")], href="/map", active="exact"),
                     dbc.NavLink([html.I(className="fas fa-chart-bar"), html.Span("Contexte")], href="/contexte", active="exact"),
+                    dbc.NavLink([html.I(className="fas fa-chart-pie"), html.Span("Analytiques")], href="/analytiques", active="exact"),
                 ],
                 vertical=True,
                 pills=True,
