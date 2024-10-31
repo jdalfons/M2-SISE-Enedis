@@ -39,6 +39,13 @@ data_energy = data_energy.merge(addresses_df, left_on='Identifiant__BAN', right_
 # Convert date column to datetime
 data_energy['Date_réception_DPE'] = pd.to_datetime(data_energy['Date_réception_DPE'], format="%Y-%m-%d")
 
+# Remove outliers based on the IQR method for 'Coût_chauffage' and 'Surface_habitable_logement'
+Q1 = data_energy[['Coût_chauffage', 'Surface_habitable_logement']].quantile(0.25)
+Q3 = data_energy[['Coût_chauffage', 'Surface_habitable_logement']].quantile(0.75)
+IQR = Q3 - Q1
+
+data_energy = data_energy[~((data_energy[['Coût_chauffage', 'Surface_habitable_logement']] < (Q1 - 1.5 * IQR)) | (data_energy[['Coût_chauffage', 'Surface_habitable_logement']] > (Q3 + 1.5 * IQR))).any(axis=1)]
+
 # Drop rows with missing latitude or longitude
 data_energy = data_energy.dropna(subset=['lat', 'lon'])
 
@@ -114,7 +121,17 @@ def map_page(collapsed):
         subtitle_map,
         html.Div(children=[
             html.Div(children=[form_filter_map], style={'width': '30%', 'display': 'inline-block', 'verticalAlign': 'top'}),
-            html.Div(id='map-container', style={'width': '70%', 'display': 'inline-block'})
+            html.Div(id='map-container', style={
+                'width': '70%', 
+                'display': 'inline-block',
+                'verticalAlign': 'top',
+                'padding': '10px',
+                'border': '1px solid #d3d3d3',
+                'backgroundColor': '#f8f9fa',
+                'height': '450px',
+                'margin': '10px',
+                'borderRadius': '15px',
+                })
         ], style={'display': 'flex'})
     ],  
                          className=pagecontent_class,
@@ -140,9 +157,21 @@ def update_map(n_clicks, selected_dpe, selected_commune, selected_cost):
         if selected_cost:
             filtered_data = filtered_data[(filtered_data['Coût_chauffage'] >= selected_cost[0]) & (filtered_data['Coût_chauffage'] <= selected_cost[1])]
         if filtered_data.empty:
-            return html.Div("No data found in the database for the selected filter."), f"Selected range: {selected_cost[0]}€ to {selected_cost[1]}€"
-        # return render_filtered_map(filtered_data), f"Selected range: {selected_cost[0]}€ to {selected_cost[1]}€"
-    return html.Div("Select some option"), ""
+            return html.Div("No data found in the database for the selected filter.", style={
+        'color': '#0d6efd',  # Red text
+        'fontWeight': 'bold',
+        'fontSize': '16px',
+        'textAlign': 'center',
+        'marginTop': '20px'
+        }), ""
+        return render_filtered_map(filtered_data)
+    return html.Div("Select some option", style={
+        'color': '#0d6efd',  # Red text
+        'fontWeight': 'bold',
+        'fontSize': '16px',
+        'textAlign': 'center',
+        'marginTop': '20px'
+    }), ""
 
 def render_filtered_map(data, collapsed=True):
     etiquet_dpe_color_dict = {
