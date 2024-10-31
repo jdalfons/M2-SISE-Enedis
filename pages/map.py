@@ -19,7 +19,6 @@ dtype = {
     'Adresse_(BAN)': 'str'
 }
 
-
 fields = ['Date_réception_DPE',
           'Etiquette_DPE',
           'Coût_chauffage',
@@ -29,15 +28,13 @@ fields = ['Date_réception_DPE',
           'Identifiant__BAN',]
 
 # Get addresses info from 69 department
-addresses_df = pd.read_csv('data/adresses-69.csv', sep=';')
+addresses_df = pd.read_csv('./data/adresses-69.csv', sep=';')
 
 # Read the CSV file into a DataFrame with specified data types
 data_energy = pd.read_csv('./data/data_output.csv', dtype=dtype, low_memory=False, names=fields, header=0)
 
 # Perform the merge operation
 data_energy = data_energy.merge(addresses_df, left_on='Identifiant__BAN', right_on='id', how='left')
-
-
 
 # Convert date column to datetime
 data_energy['Date_réception_DPE'] = pd.to_datetime(data_energy['Date_réception_DPE'], format="%Y-%m-%d")
@@ -48,8 +45,8 @@ data_energy = data_energy.dropna(subset=['lat', 'lon'])
 # Get unique DPE labels
 etiquet_dpe = data_energy['Etiquette_DPE'].cat.categories
 
-# Limit the data to 150 rows
-# data_energy = data_energy.head(10000)
+# Get unique commune names and add "All" option
+communes = ['All'] + addresses_df['nom_commune'].unique().tolist()
 
 global new_click 
 global old_click 
@@ -59,14 +56,56 @@ old_click = 0
 title_map = html.H2("Cartographie des Consommations Énergétiques")
 subtitle_map = html.P("Analysez la consommation énergétique en fonction de la localisation.")
 form_filter_map = html.Div(children=[
+    html.Label("Étiquette DPE"),
     dcc.Dropdown(
         id='dpe-filter',
         options=[{'label': label, 'value': label} for label in etiquet_dpe],
-        placeholder="Sélectionnez une étiquette DPE",
+        placeholder="Sélectionnez une étiquette DPE"
+    ),
+    html.Label("Commune"),
+    dcc.Dropdown(
+        id='commune-filter',
+        options=[{'label': commune, 'value': commune} for commune in communes],
+        placeholder="Sélectionnez une commune",
         multi=True
     ),
-    html.Button('Submit', id='submit-button', n_clicks=0)
+    html.Label("Coût Chauffage (€)"),
+    dcc.RangeSlider(
+        id='cost-slider',
+        min=data_energy['Coût_chauffage'].min(),
+        max=data_energy['Coût_chauffage'].max(),
+        step=1,
+        value=[data_energy['Coût_chauffage'].min(), data_energy['Coût_chauffage'].max()],
+        marks={int(val): str(int(val)) for val in data_energy['Coût_chauffage'].quantile([0, 0.25, 0.5, 0.75, 1]).tolist()}
+    ),
+    html.Div(id='cost-range-display', style={
+        'marginTop': '10px',
+        'marginBottom': '10px',
+        'fontWeight': 'bold',
+        'fontSize': '13px',
+        # 'textAlign': 'center',
+        'color': '#0d6efd'}),
+    html.Button('Submit', id='submit-button', n_clicks=0, style={
+        'backgroundColor': '#0d6efd',  # Blue background
+        'color': 'white',              
+        'padding': '15px 32px',         
+        'textAlign': 'center',         
+        'textDecoration': 'none',      
+        'display': 'inline-block',     
+        'fontSize': '16px',            
+        'margin': '4px 2px',           
+        'cursor': 'pointer',           
+        'border': 'none',              
+        'borderRadius': '4px'          
+    })
 ])
+
+@app.callback(
+    Output('cost-range-display', 'children'),
+    Input('cost-slider', 'value')
+)
+def update_cost_range_display(selected_cost):
+    return f"Selected range: {selected_cost[0]}€ to {selected_cost[1]}€"
 
 def map_page(collapsed):
     pagecontent_class = "page-content collapsed" if collapsed else "page-content"
@@ -86,17 +125,24 @@ def map_page(collapsed):
 @app.callback(
     Output('map-container', 'children'),
     Input('submit-button', 'n_clicks'),
-    Input('dpe-filter', 'value'))
-def update_map(n_clicks, selected_dpe):
+    Input('dpe-filter', 'value'),
+    Input('commune-filter', 'value'),
+    Input('cost-slider', 'value'))
+def update_map(n_clicks, selected_dpe, selected_commune, selected_cost):
     global new_click, old_click
-    new_click += 1
-    if new_click > old_click and selected_dpe:
-        old_click = new_click
-        filtered_data = data_energy[data_energy['Etiquette_DPE'].isin(selected_dpe)]
+    if n_clicks > old_click:
+        old_click = n_clicks
+        filtered_data = data_energy
+        if selected_dpe:
+            filtered_data = filtered_data[filtered_data['Etiquette_DPE'] == selected_dpe]
+        if selected_commune and 'All' not in selected_commune:
+            filtered_data = filtered_data[filtered_data['nom_commune'].isin(selected_commune)]
+        if selected_cost:
+            filtered_data = filtered_data[(filtered_data['Coût_chauffage'] >= selected_cost[0]) & (filtered_data['Coût_chauffage'] <= selected_cost[1])]
         if filtered_data.empty:
-            return html.Div("No data found in the database for the selected filter.")
-        return render_filtered_map(filtered_data)
-    return html.Div("Select some option")
+            return html.Div("No data found in the database for the selected filter."), f"Selected range: {selected_cost[0]}€ to {selected_cost[1]}€"
+        # return render_filtered_map(filtered_data), f"Selected range: {selected_cost[0]}€ to {selected_cost[1]}€"
+    return html.Div("Select some option"), ""
 
 def render_filtered_map(data, collapsed=True):
     etiquet_dpe_color_dict = {
