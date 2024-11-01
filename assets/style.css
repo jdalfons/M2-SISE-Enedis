@@ -227,3 +227,98 @@
     overflow: hidden;
 }
 
+
+
+
+
+/* Styles de base pour la page contexte */
+/* Styles pour les KPI */
+/* Section des KPI */
+.kpi-section {
+    display: flex;
+    justify-content: space-between; /* Espace entre chaque KPI */
+    padding: 1rem 0;
+}
+
+/* Carte KPI */
+.kpi-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    margin: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    font-weight: bold;
+    animation: fadeInUp 0.6s ease-out forwards;
+    text-align: center;
+}
+
+/* Alignement de l’icône et du titre */
+
+/* Style principal de la carte KPI */
+.kpi-card {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+    width: 100%; /* Ajuste la largeur de chaque KPI */
+    max-width: 300px;
+}
+
+/* Conteneur pour l'icône à gauche */
+.kpi-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    font-size: 2rem;
+    margin-right: 1rem; /* Espace entre l'icône et le texte */
+}
+
+/* Conteneur pour le texte et la valeur */
+.kpi-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style du titre */
+.kpi-title {
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Style de la valeur */
+.kpi-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+
+
+.visualizations-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.visualization-card {
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.data-table-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+}
