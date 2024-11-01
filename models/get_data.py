@@ -1,82 +1,81 @@
 import pandas as pd
 import requests
-import logging
+import time
+import os
 from tqdm import tqdm
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 # Base URL of the API
-BASE_URL = "https://data.ademe.fr/data-fair/api/v1/datasets/dpe-v2-logements-existants/lines"
-YEARS = [2021, 2022, 2023, 2024]
-ETIQUETS = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+API_URL = "https://data.ademe.fr/data-fair/api/v1/datasets/dpe-v2-logements-existants/lines"
+DATA_FILE = 'data/adresses-69.csv'
+OUTPUT_FILE = 'dpe.xlsx'
 
-def get_unique_postal_codes(file_path):
-    """Read the CSV file and return a list of unique postal codes."""
-    try:
-        addresses_df = pd.read_csv(file_path, sep=';')
-        return addresses_df['code_postal'].unique().tolist()
-    except Exception as e:
-        logging.error(f"Error reading CSV file: {e}")
-        return []
 
-def fetch_data(params):
-    """Fetch data from the API with the given parameters."""
-    try:
-        response = requests.get(BASE_URL, params=params)
-        response.raise_for_status()  # Raise an HTTPError for bad responses
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Request failed: {e}")
-        return None
-
-def fetch_all_data(params):
-    """Fetch all data handling pagination with a loading bar."""
-    full_content = []
-    total_records = 0
-    file_path = 'data/adresses-69.csv'
-    postal_codes = get_unique_postal_codes(file_path)
+def fetch_data_for_zip(zip_code):
+    """
+    Fetch data from the API for a given zip code.
     
-    if not postal_codes:
-        logging.error("No postal codes found. Exiting.")
-        return
+    Parameters:
+    zip_code (str): The postal code to query.
     
-    with tqdm(total=100, desc="Fetching data", unit="record") as pbar:
-        while True:
-            for postal_code in postal_codes:
-                data = fetch_data(params)
-                data['q'] = postal_code
-                if not data:
-                    break
-                results = data.get('results', [])
-                full_content.extend(results)
-                total_records += len(results)
-                pbar.update(len(results))
-                next_url = data.get('next')
-                if not next_url:
-                    break
-                params = None  # Clear params for subsequent requests
-                BASE_URL = next_url
-        pbar.total = total_records
-        pbar.refresh()
-    return full_content
-
-def main():
-
+    Returns:
+    list: A list of results from the API.
+    """
     params = {
         "size": 10000,
-        "select": "N°DPE,Code_postal_(BAN),Etiquette_DPE,Date_réception_DPE",
+        "q": zip_code,
+        "q_fields": "Code_postal_(BAN)",
     }
-
-    full_content = fetch_all_data(params)
     
-    if full_content:
-        logging.info(f"Fetched {len(full_content)} records.")
-        df = pd.DataFrame(full_content)
-        df.to_excel('dpe.xlsx', index=False)
-        logging.info("Data saved to dpe.xlsx")
+    response = requests.get(API_URL, params=params)
+    if response.status_code == 200:
+        content = response.json()
+        print(f"Nombre total de lignes : {content['total']}")
+        results = content.get('results', [])
+        print(f"Dimensions des données récupérées : {len(results)}, {len(results[0]) if results else 0}")
+        
+        # Handle pagination
+        next_url = content.get('next', None)
+        while next_url:
+            new_content = requests.get(next_url).json()
+            results.extend(new_content.get('results', []))
+            print(f"Nombre total de lignes dans full_content : {len(results)}")
+            next_url = new_content.get('next', None)
+        
+        return results
     else:
-        logging.error("Failed to fetch data.")
+        print(f"Erreur lors de la requête pour le code postal {zip_code}")
+        return []
+
+
+def main():
+    """
+    Main function to orchestrate the data fetching and saving process.
+    """
+    
+    # Check if the output file exists, if not create it
+    if not os.path.exists(OUTPUT_FILE):
+        pd.DataFrame().to_excel(OUTPUT_FILE, index=False)
+
+    addresses_df = pd.read_csv(DATA_FILE, sep=';')
+    codes_postals = addresses_df['code_postal'].unique().tolist()
+    start_time = time.time()
+    
+    
+    for zip_code in tqdm(codes_postals, desc="Fetching data"):
+        data = fetch_data_for_zip(zip_code)
+        df = pd.DataFrame(data)
+        
+        # Append data to the Excel file
+        with pd.ExcelWriter(OUTPUT_FILE, mode='a', if_sheet_exists='overlay') as writer:
+            df.to_excel(writer, index=False, header=False, startrow=writer.sheets['Sheet1'].max_row)
+        
+        # Clear the memory
+        del df
+
+    elapsed_time = time.time() - start_time
+    print(f"Data saved to {OUTPUT_FILE}")
+    print(f"Elapsed time: {elapsed_time:.2f} seconds")
+
 
 if __name__ == "__main__":
     main()
