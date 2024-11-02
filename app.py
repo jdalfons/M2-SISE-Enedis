@@ -2,18 +2,14 @@ import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
-from components.sidebar import create_sidebar  # Sidebar importée depuis components
-from pages import home, prediction, map, contexte  # Importation des pages
+from components.sidebar import create_sidebar
+from pages import home, prediction, map, contexte  
 
+# Initialise l'application
 app = dash.Dash(
     __name__,
-    external_stylesheets=[
-        dbc.themes.BOOTSTRAP,
-        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'  
-    ]
+    external_stylesheets=[dbc.themes.BOOTSTRAP, 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css']
 )
-app.title = "GreenTech Solutions"
-server = app.server
 
 # Layout principal
 app.layout = html.Div([
@@ -34,7 +30,6 @@ def toggle_sidebar(n_clicks, collapsed):
     if n_clicks is None:  # Évitez les erreurs au début
         return create_sidebar(collapsed=False), False
 
-    # Inverse l'état collapsed et met à jour le store
     new_collapsed = not collapsed
     return create_sidebar(new_collapsed), new_collapsed
 
@@ -46,7 +41,7 @@ def display_page(pathname, collapsed):
     elif pathname == "/map":
         return map.render_map(collapsed=collapsed)
     elif pathname == "/contexte":
-        return contexte.render_contexte(collapsed=collapsed)
+        return contexte.render_contexte(collapsed=collapsed)  # Appeler la fonction qui rend la page de contexte
     return home.render_home(collapsed=collapsed)
 
 if __name__ == "__main__":

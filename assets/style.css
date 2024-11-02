@@ -108,6 +108,7 @@
 }
 
 
+
 /*pages homme*/
 /* Centrer le titre principal et lui donner une couleur moderne */
 .main-title {
@@ -321,4 +322,111 @@
     padding: 1rem;
     background-color: #f7f7f7;
     border-radius: 8px;
+}
+
+
+/* Style général pour la page de prédiction */
+
+/* Style des titres */
+#pagePrediction h2, #pagePrediction h3 {
+    text-align: center;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Style des paragraphes */
+#pagePrediction p {
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 25px;
+}
+
+/* Conteneur des champs */
+#pagePrediction .fields-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+/* Style des groupes de champs pour alignement gauche/droite */
+#pagePrediction .field-group {
+    width: 48%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Champs de texte et de sélection */
+#pagePrediction .field-group input[type="text"],
+#pagePrediction .field-group .dash-dropdown {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.95em;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+#pagePrediction .field-group input[type="text"]:focus,
+#pagePrediction .field-group .dash-dropdown:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+/* Bouton centré */
+#pagePrediction .predict-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#pagePrediction .predict-button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1em;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#pagePrediction .predict-button:hover {
+    background-color: #0056b3;
+}
+
+/* Zone de résultats */
+#pagePrediction .result-container {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+#pagePrediction .result-container h4 {
+    color: #333;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+#pagePrediction .result-container p {
+    color: #555;
+    font-size: 0.95em;
+}
+
+
+/* Responsive pour les petits écrans */
+@media (max-width: 768px) {
+    #pagePrediction .field-group {
+        width: 100%;
+    }
 }

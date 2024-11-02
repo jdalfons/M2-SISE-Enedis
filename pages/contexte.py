@@ -1,66 +1,65 @@
-
-# pages/context.py
-from dash import html, dcc
+from dash import html, dcc, Input, Output
+from dash import dash_table
+import pandas as pd
 from components.kpi import render_kpi
-from components.filters import render_radio_button, render_slider, render_checkbox, render_dropdown
+from components.filters import render_dropdown
+from app import app  
 
+# Charger le fichier des données
+data_concated = pd.read_csv('./data/data_concated.csv')
+
+# Extraire les valeurs uniques pour les filtres
+periode_construction_options = data_concated['Periode_construction'].unique().tolist()
+dpe_options = data_concated['Etiquette_DPE'].unique().tolist()
+type_batiment_options = data_concated['Type_bâtiment'].unique().tolist()
 
 def render_contexte(collapsed):
     pagecontent_class = "page-content collapsed" if collapsed else "page-content"
-    
-    
-   # Section des KPI
+
+    # Section des KPI
     kpi_section = html.Div(
         [
-            render_kpi(
-                "Logements par Etiquette DPE", # on peut modifier les kpi il faut qu'on se mette d'accord les quels ont veut affichers
-                "1200",
-                color="linear-gradient(135deg, #4CAF50, #81C784)",  # Vert moderne
-                icon_class="fas fa-tags"
-            ),
-            render_kpi("Date de réception DPE","Moyenne: 2015",color="linear-gradient(135deg, #FFC107, #FFD54F)", icon_class="fas fa-calendar-alt"),
-            render_kpi("Surface habitable moyenne","75 m²",color="linear-gradient(135deg, #FF8C00, #FFA726)",icon_class="fas fa-home"),
-            render_kpi("Coût moyen de chauffage","300€",color="linear-gradient(135deg, #FF4B4B, #E57373)",icon_class="fas fa-euro-sign"),
+            render_kpi("Total des logements", f"{data_concated.shape[0]}", color="linear-gradient(135deg, #4CAF50, #81C784)", icon_class="fas fa-tags"),
+            render_kpi("Consommation Énergétique Totale Moyenne", f"{round(data_concated['Coût_total_5_usages'].mean(), 2)} €", color="linear-gradient(135deg, #FFC107, #FFD54F)", icon_class="fas fa-calendar-alt"),
+            render_kpi("Surface habitable moyenne", f"{round(data_concated['Surface_habitable_logement'].mean(), 2)} m²", color="linear-gradient(135deg, #FF8C00, #FFA726)", icon_class="fas fa-home"),
+            render_kpi("Coût moyen de chauffage", f"{round(data_concated['Coût_chauffage'].mean(), 2)} €", color="linear-gradient(135deg, #FF4B4B, #E57373)", icon_class="fas fa-euro-sign"),
         ],
         className="kpi-section"
     )
 
-    
-
     # Section pour les filtres
     filters_section = html.Div(
         [
-            render_radio_button("filter-type-logement", ["Ancien", "Neuf"], label="Type de Logement"),
-            render_slider("filter-surface", 0, 200, 10, 100, label="Surface Habitable (m²)"),
-            #render_checkbox("filter-DPE", ["D", "E", "F", "G"], label="Etiquette DPE"),
-            render_dropdown("filter-type-batiment", ["Appartement", "Maison", "Bureau"], label="Type de Bâtiment", multi=True)
+            render_dropdown("filter-periode-construction", periode_construction_options, label="Période de construction", multi=True),
+            render_dropdown("filter-DPE", dpe_options, label="Etiquette DPE", multi=True),
+            render_dropdown("filter-type-batiment", type_batiment_options, label="Type de Bâtiment", multi=True)
         ],
         className="filter-section"
     )
 
-    # Section pour les visualisations (4 types de graphiques)
-    visualizations_section = html.Div(
-        [
-            html.Div(dcc.Graph(id="histogram-dpe"), className="visualization-card"),
-            html.Div(dcc.Graph(id="boxplot-ecs"), className="visualization-card"),
-            html.Div(dcc.Graph(id="pie-chart-chauffage"), className="visualization-card"),
-            html.Div(dcc.Graph(id="scatterplot-surface"), className="visualization-card")
-        ],
-        className="visualizations-section"
-    )
-
     # Section pour le tableau des données
     data_table_section = html.Div(
-        html.P("Tableau des données (Filtrées):"),
+        [
+            html.P("Tableau des données :"),
+            dash_table.DataTable(
+                id='data-table',
+                columns=[{"name": col, "id": col} for col in data_concated.columns],  # Afficher toutes les colonnes
+                page_size=10,  # Nombre de lignes par page
+                style_table={'overflowX': 'auto'},  # Permet le défilement horizontal si nécessaire
+                filter_action='native',  # Permet le filtrage natif dans le tableau
+                sort_action='native',  # Permet le tri natif
+                data=data_concated.to_dict('records'),  # Ajoutez les données ici
+            ),
+        ],
         className="data-table-section"
     )
+
 
     return html.Div(
         [
             html.H2("Contexte : Statistiques et Visualisation", className="page-title"),
             kpi_section,
             filters_section,
-            visualizations_section,
             data_table_section
         ],
         className=pagecontent_class,
