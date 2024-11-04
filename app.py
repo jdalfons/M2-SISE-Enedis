@@ -2,7 +2,6 @@ import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
-<<<<<<< HEAD
 from components.sidebar import create_sidebar  # Sidebar importée depuis components
 from pages import home, prediction, map, contexte, analytiques  # Importation des pages
 from config import (
@@ -14,16 +13,6 @@ from config import (
     HOME_PATH)
 
 
-=======
-from components.sidebar import create_sidebar
-from pages import home, prediction, map, contexte  
-
-# Initialise l'application
-app = dash.Dash(
-    __name__,
-    external_stylesheets=[dbc.themes.BOOTSTRAP, 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css']
-)
->>>>>>> 6543db007f3e7824edfeb93534e21a5ea1f901d3
 
 # Layout principal
 app.layout = html.Div([
