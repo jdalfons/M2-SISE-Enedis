@@ -2,6 +2,7 @@ import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+<<<<<<< HEAD
 from components.sidebar import create_sidebar  # Sidebar importée depuis components
 from pages import home, prediction, map, contexte, analytiques  # Importation des pages
 from config import (
@@ -13,6 +14,16 @@ from config import (
     HOME_PATH)
 
 
+=======
+from components.sidebar import create_sidebar
+from pages import home, prediction, map, contexte  
+
+# Initialise l'application
+app = dash.Dash(
+    __name__,
+    external_stylesheets=[dbc.themes.BOOTSTRAP, 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css']
+)
+>>>>>>> 6543db007f3e7824edfeb93534e21a5ea1f901d3
 
 # Layout principal
 app.layout = html.Div([
@@ -67,6 +78,7 @@ app.callback(
     Output("sidebar-collapsed", "data"),  
     Input("sidebar-header", "n_clicks"),
     State("sidebar-collapsed", "data"),
+<<<<<<< HEAD
 )(toggle_sidebar)
 
 # Callback pour le contenu de la page avec l'état collapsed 
@@ -74,6 +86,26 @@ app.callback(
     Output("page-content", "children"), 
     [Input("url", "pathname"), 
      Input("sidebar-collapsed", "data")])(display_page)
+=======
+)
+def toggle_sidebar(n_clicks, collapsed):
+    if n_clicks is None:  # Évitez les erreurs au début
+        return create_sidebar(collapsed=False), False
+
+    new_collapsed = not collapsed
+    return create_sidebar(new_collapsed), new_collapsed
+
+# Callback pour le contenu de la page avec l'état collapsed 
+@app.callback(Output("page-content", "children"), [Input("url", "pathname"), Input("sidebar-collapsed", "data")])
+def display_page(pathname, collapsed):
+    if pathname == "/prediction":
+        return prediction.render_prediction(collapsed=collapsed)
+    elif pathname == "/map":
+        return map.render_map(collapsed=collapsed)
+    elif pathname == "/contexte":
+        return contexte.render_contexte(collapsed=collapsed)  # Appeler la fonction qui rend la page de contexte
+    return home.render_home(collapsed=collapsed)
+>>>>>>> 6543db007f3e7824edfeb93534e21a5ea1f901d3
 
 if __name__ == "__main__":
     app.run_server(debug=True)
