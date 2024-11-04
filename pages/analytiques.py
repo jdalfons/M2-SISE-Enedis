@@ -4,7 +4,8 @@ This module provides the analytical dashboard for energy consumption.
 
 import pandas as pd
 from dash import html, dcc, Input, Output
-from config import app, fields
+from config import fields
+from init_app import app
 import plotly.io as pio
 import io
 import base64
@@ -13,7 +14,7 @@ import dash
 data_energy = (
     pd.read_csv('./data/data_output.csv', 
                 low_memory=False, 
-                names=fields, header=0)
+                header=0)
 )
 
 # Remove outliers based on Coût_chauffage
