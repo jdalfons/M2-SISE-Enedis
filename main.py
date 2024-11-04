@@ -1,4 +1,4 @@
-from init_app import app
+from config import app
 
 if __name__ == "__main__":
     app.run_server(debug=True)

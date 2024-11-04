@@ -1,4 +1,3 @@
-# pages/stats.py
 from dash import html
 
 def render_contexte(collapsed):

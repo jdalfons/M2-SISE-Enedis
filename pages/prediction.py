@@ -1,11 +1,4 @@
-# pages/prediction.py
-import pandas as pd
-from dash import html, dcc, Input, Output
-from init_app import app
-import plotly.io as pio
-import io
-import base64
-import dash
+from dash import html, dcc
 
 def render_prediction(collapsed):
     predictions = html.Div(

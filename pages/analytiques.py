@@ -4,8 +4,7 @@ This module provides the analytical dashboard for energy consumption.
 
 import pandas as pd
 from dash import html, dcc, Input, Output
-from config import fields
-from init_app import app
+from config import app
 import plotly.io as pio
 import io
 import base64
@@ -93,6 +92,10 @@ def render_analytiques(collapsed):
                                     id="boxplot-chart",
                                     config={"displayModeBar": False},
                                 ),
+                                dcc.Graph(
+                                    id="bar-chart",
+                                    config={"displayModeBar": False},
+                                ),
                             ],
                             className="wrapper",
                         ),
@@ -169,3 +172,28 @@ def download_graphs(n_clicks, etiquette_dpe):
     encoded_image = base64.b64encode(buffer.getvalue()).decode()
 
     return dict(content=encoded_image, filename="graphs.png", base64=True)
+@app.callback(
+    Output("bar-chart", "figure"),
+    Input("etiquette-dpe-filter", "value"),
+)
+def update_bar_chart(etiquette_dpe):
+    filtered_data = data_energy[data_energy["Etiquette_DPE"].isin(etiquette_dpe)]
+    
+    bar_chart_figure = {
+        "data": [
+            {
+                "x": filtered_data["Etiquette_DPE"],
+                "y": filtered_data["Coût_chauffage"],
+                "type": "bar",
+                "name": "Coût_chauffage",
+            },
+        ],
+        "layout": {
+            "title": {"text": "Bar Chart du Coût du Chauffage selon le Type d'Étiquette DPE (Sans Outliers)", "x": 0.05, "xanchor": "left"},
+            "xaxis": {"title": "Étiquette DPE"},
+            "yaxis": {"title": "Coût du Chauffage"},
+            "colorway": ["#636EFA"],
+        },
+    }
+
+    return bar_chart_figure
