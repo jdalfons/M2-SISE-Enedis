@@ -1,15 +1,15 @@
 from dash import html, dcc, Input, Output
 from dash import dash_table
 import pandas as pd
-from components.kpi import render_kpi
-from components.filters import render_dropdown
-from app import app  
+# from components.kpi import render_kpi
+# from components.filters import render_dropdown
+from config import app, DATA
 
 # Charger le fichier des données
-data_concated = pd.read_csv('./data/data_concated.csv')
+data_concated = pd.read_csv(DATA)
 
 # Extraire les valeurs uniques pour les filtres
-periode_construction_options = data_concated['Periode_construction'].unique().tolist()
+# periode_construction_options = data_concated['Periode_construction'].unique().tolist()
 dpe_options = data_concated['Etiquette_DPE'].unique().tolist()
 type_batiment_options = data_concated['Type_bâtiment'].unique().tolist()
 

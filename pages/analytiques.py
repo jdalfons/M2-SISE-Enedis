@@ -3,7 +3,7 @@ This module provides the analytical dashboard for energy consumption.
 """
 
 import pandas as pd
-from dash import html, dcc, Input, Output
+from dash import html, dcc, Input, Output, State
 from config import app
 import plotly.io as pio
 import io
@@ -172,6 +172,7 @@ def download_graphs(n_clicks, etiquette_dpe):
     encoded_image = base64.b64encode(buffer.getvalue()).decode()
 
     return dict(content=encoded_image, filename="graphs.png", base64=True)
+
 @app.callback(
     Output("bar-chart", "figure"),
     Input("etiquette-dpe-filter", "value"),
@@ -197,3 +198,21 @@ def update_bar_chart(etiquette_dpe):
     }
 
     return bar_chart_figure
+
+@app.callback(
+    Output("sidebar-container", "children"),
+    Output("sidebar-collapsed", "data"),
+    Input("sidebar-toggle", "n_clicks"),
+    State("sidebar-collapsed", "data"),
+)
+def toggle_sidebar(n_clicks, is_collapsed):
+    if n_clicks:
+        is_collapsed = not is_collapsed
+    else:
+        is_collapsed = False
+
+    sidebar_content = html.Div(
+        # ...sidebar content...
+    ) if not is_collapsed else None
+
+    return sidebar_content, is_collapsed

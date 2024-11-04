@@ -7,6 +7,7 @@ MAP_PATH = "/map"
 CONTEXTE_PATH = "/contexte"
 ANALYTIQUES_PATH = "/analytiques"
 HOME_PATH = "/"
+DATA = "./data/data_output.csv"
 
 external_stylesheets = [
     {
