@@ -308,3 +308,85 @@ body {
     font-weight: bold;
     color: #079A82;
 }
+#cost-range-display {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #0d6efd;
+}
+
+#submit-button {
+    background-color: #0d6efd;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+}
+
+#form-filter-map {
+    width: 30%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#map-container {
+    width: 70%;
+    display: inline-block;
+    vertical-align: top;
+    padding: 10px;
+    border: 1px solid #d3d3d3;
+    background-color: #f8f9fa;
+    height: 450px;
+    margin: 10px;
+    border-radius: 15px;
+}
+
+#no-data-message {
+    color: #0d6efd;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+#pageMap {
+    display: flex;
+}
+
+.menuMap {
+    padding: 24px;
+    background-color: #FFFFFF;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.18);
+    border-radius: 15px;
+    margin-top: 10px;
+}
+
+.mapContent {
+    width: 70%;
+    padding: 24px;
+    background-color: #FFFFFF;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.18);
+    border-radius: 15px;
+    margin-top: 10px;
+    margin: 10px;
+    vertical-align: top;
+    display: inline-block;
+    padding: 10px;
+    height: 450px;
+    /* 
+    
+    
+    
+    
+    background-color: #ffffff;
+    
+    
+    border-radius: 15px; */
+}
