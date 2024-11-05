@@ -3,6 +3,7 @@ import requests
 import gc
 import os
 from config import fields
+import time
 
 # Constants
 URL = "https://data.ademe.fr/data-fair/api/v1/datasets/dpe-v2-logements-existants/lines"
@@ -162,4 +163,12 @@ def main():
     gc.collect()
 
 if __name__ == "__main__":
+    # main()
+    start_time = time.time()
+    print("Starting the full process...")
+    # Existing main function call
     main()
+
+    end_time = time.time()
+    total_time = end_time - start_time
+    print(f"Total time taken for the full process: {total_time:.2f} seconds")

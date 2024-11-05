@@ -10,6 +10,8 @@ import plotly.io as pio
 import io
 import base64
 import dash
+import pickle
+from sklearn.linear_model import LinearRegression
 
 data_energy = (
     pd.read_csv('./data/data_output.csv', 
@@ -30,6 +32,16 @@ data_energy = data_energy[
 ]
 
 etiquettes_dpe = data_energy["Etiquette_DPE"].sort_values().unique()
+
+# Train a simple linear regression model
+X = pd.get_dummies(data_energy["Etiquette_DPE"])
+y = data_energy["Coût_chauffage"]
+model = LinearRegression()
+model.fit(X, y)
+
+# Save the model to a file
+with open('energy_model.pkl', 'wb') as f:
+    pickle.dump(model, f)
 
 def render_analytiques(collapsed):
     analytics = html.Div(
@@ -169,3 +181,40 @@ def download_graphs(n_clicks, etiquette_dpe):
     encoded_image = base64.b64encode(buffer.getvalue()).decode()
 
     return dict(content=encoded_image, filename="graphs.png", base64=True)
+
+def predict_energy_consumption(params):
+    """
+    Predict energy consumption based on input parameters.
+    
+    Args:
+        params (list): List of parameters for prediction.
+        
+    Returns:
+        dict: Prediction results.
+    """
+    # Load the model from the file
+    with open('energy_model.pkl', 'rb') as f:
+        model = pickle.load(f)
+    
+    # Convert params to a DataFrame
+    input_data = pd.DataFrame(params)
+    input_data = pd.get_dummies(input_data)
+    
+    # Ensure the input data has the same columns as the training data
+    missing_cols = set(X.columns) - set(input_data.columns)
+    for col in missing_cols:
+        input_data[col] = 0
+    input_data = input_data[X.columns]
+    
+    # Generate prediction
+    prediction = model.predict(input_data)
+    
+    return {"prediction": prediction.tolist()}
+
+# Example usage
+params = [
+    {"Etiquette_DPE": "A"},
+    {"Etiquette_DPE": "B"}
+]
+result = predict_energy_consumption(params)
+print(result)

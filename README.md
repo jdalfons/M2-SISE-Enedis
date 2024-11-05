@@ -47,6 +47,32 @@ M2-Enedis is a dashboard application built using Dash and Plotly. It provides va
     http://127.0.0.1:8050/
     ```
 
+## Running API
+
+1. **Run API**
+```sh
+    uvicorn main:app --reload
+```
+
+## Example API Request
+
+To send a request to the API, you can use the following example with `curl`:
+
+```sh
+curl -X POST "http://127.0.0.1:8000/your-endpoint" -H "Content-Type: application/json" -d '{
+    "Type_batiment": "Residential",
+    "Annee_construction": 1990,
+    "Classe_inertie_batiment": "High",
+    "Hauteur_sous_plafond": 2.5,
+    "Surface_habitable_logement": 100.0,
+    "Type_energie_principale_chauffage": "Electric",
+    "Isolation_toiture": 1,
+    "Code_INSEE": "75001"
+}'
+```
+
+Replace `"http://127.0.0.1:8000/your-endpoint"` with the actual endpoint of your API.
+
 ## Usage
 
 - **Home Page:** Provides an introduction and key performance indicators (KPIs).
