@@ -1,6 +1,7 @@
 """
 This module provides a FastAPI application for predicting energy consumption.
 """
+from config import app
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel

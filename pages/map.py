@@ -1,10 +1,9 @@
-# pages/map.py
 from dash import html, dcc, Input, Output
 import pandas as pd
 import branca
 import folium
 from folium.plugins import MarkerCluster
-from init_app import app
+from config import app
 import os
 
 app.config.suppress_callback_exceptions = True

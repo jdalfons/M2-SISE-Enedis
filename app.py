@@ -4,15 +4,14 @@ from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 from components.sidebar import create_sidebar  # Sidebar importée depuis components
 from pages import home, prediction, map, contexte, analytiques  # Importation des pages
-from config import external_stylesheets
-from init_app import app
+from config import (
+    app, 
+    PREDICTION_PATH, 
+    MAP_PATH, 
+    CONTEXTE_PATH, 
+    ANALYTIQUES_PATH, 
+    HOME_PATH)
 
-# Constants for paths
-PREDICTION_PATH = "/prediction"
-MAP_PATH = "/map"
-CONTEXTE_PATH = "/contexte"
-ANALYTIQUES_PATH = "/analytiques"
-HOME_PATH = "/"
 
 
 # Layout principal
