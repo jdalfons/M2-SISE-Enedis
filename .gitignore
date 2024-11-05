@@ -166,3 +166,4 @@ cython_debug/
 dpe.xlsx
 data/*
 .DS_Store
+tests/
