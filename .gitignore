@@ -165,4 +165,5 @@ cython_debug/
 ## Project Specific
 dpe.xlsx
 data/*
+.DS_Store
 tests/
