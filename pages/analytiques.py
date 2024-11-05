@@ -9,6 +9,8 @@ import plotly.io as pio
 import io
 import base64
 import dash
+import pickle
+from sklearn.linear_model import LinearRegression
 
 data_energy = (
     pd.read_csv('./data/data_output.csv', 
@@ -29,6 +31,16 @@ data_energy = data_energy[
 ]
 
 etiquettes_dpe = data_energy["Etiquette_DPE"].sort_values().unique()
+
+# Train a simple linear regression model
+X = pd.get_dummies(data_energy["Etiquette_DPE"])
+y = data_energy["Coût_chauffage"]
+model = LinearRegression()
+model.fit(X, y)
+
+# Save the model to a file
+with open('energy_model.pkl', 'wb') as f:
+    pickle.dump(model, f)
 
 def render_analytiques(collapsed):
     analytics = html.Div(
