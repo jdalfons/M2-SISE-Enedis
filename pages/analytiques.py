@@ -198,21 +198,3 @@ def update_bar_chart(etiquette_dpe):
     }
 
     return bar_chart_figure
-
-@app.callback(
-    Output("sidebar-container", "children"),
-    Output("sidebar-collapsed", "data"),
-    Input("sidebar-toggle", "n_clicks"),
-    State("sidebar-collapsed", "data"),
-)
-def toggle_sidebar(n_clicks, is_collapsed):
-    if n_clicks:
-        is_collapsed = not is_collapsed
-    else:
-        is_collapsed = False
-
-    sidebar_content = html.Div(
-        # ...sidebar content...
-    ) if not is_collapsed else None
-
-    return sidebar_content, is_collapsed

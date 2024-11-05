@@ -67,24 +67,13 @@ app.callback(
     Output("sidebar-collapsed", "data"),  
     Input("sidebar-header", "n_clicks"),
     State("sidebar-collapsed", "data"),
-)
-def toggle_sidebar(n_clicks, collapsed):
-    if n_clicks is None:  # Évitez les erreurs au début
-        return create_sidebar(collapsed=False), False
-
-    new_collapsed = not collapsed
-    return create_sidebar(new_collapsed), new_collapsed
+)(toggle_sidebar)
 
 # Callback pour le contenu de la page avec l'état collapsed 
-@app.callback(Output("page-content", "children"), [Input("url", "pathname"), Input("sidebar-collapsed", "data")])
-def display_page(pathname, collapsed):
-    if pathname == "/prediction":
-        return prediction.render_prediction(collapsed=collapsed)
-    elif pathname == "/map":
-        return map.render_map(collapsed=collapsed)
-    elif pathname == "/contexte":
-        return contexte.render_contexte(collapsed=collapsed)  # Appeler la fonction qui rend la page de contexte
-    return home.render_home(collapsed=collapsed)
+app.callback(
+    Output("page-content", "children"), 
+    [Input("url", "pathname"), 
+     Input("sidebar-collapsed", "data")])(display_page)
 
 if __name__ == "__main__":
     app.run_server(debug=True)
