@@ -2,9 +2,9 @@
 from dash import dcc, html, Input, Output, State
 import joblib
 import pandas as pd
+from config import app
 
 # chargement du modele 
-#model = joblib.load("pipeline_ml_regression.pkl")
 
 def render_prediction(collapsed):
     title_predictions = html.Div(
@@ -194,3 +194,41 @@ def render_prediction(collapsed):
         id="pagePrediction"
     ) 
 
+
+# model = joblib.load("./models/pipeline_ml_regression.pkl")
+# Callback pour prédire la consommation énergétique
+@app.callback(
+    Output('resultat-consommation-text', 'children'),
+    Input('predict-consumption-button', 'n_clicks'),
+    State('text-input-3', 'value'),
+    State('select-11', 'value'),
+    State('select-9', 'value'),
+    State('select-10', 'value'),
+    State('text-input-4', 'value'),
+    State('select-12', 'value'),
+    State('select-13', 'value'),
+    State('select-14', 'value')
+)
+def predict_consumption(n_clicks, nom_bien, hauteur_plafond, etiquette_dpe, annee_construction, code_insee, surface_habitable, type_energie, isolation_toiture):
+    if n_clicks is None:
+        return "Le résultat de la consommation s'affichera ici après la prédiction."
+    
+    # Préparation des données pour la prédiction
+    data = pd.DataFrame({
+        'nom_bien': [nom_bien],
+        'hauteur_plafond': [hauteur_plafond],
+        'etiquette_dpe': [etiquette_dpe],
+        'annee_construction': [annee_construction],
+        'code_insee': [code_insee],
+        'surface_habitable': [surface_habitable],
+        'type_energie': [type_energie],
+        'isolation_toiture': [isolation_toiture]
+    })
+    
+    # Chargement du modèle
+    model = joblib.load("./models/pipeline_ml_regression.pkl")
+    
+    # Prédiction
+    prediction = model.predict(data)[0]
+    
+    return f"La consommation énergétique estimée est de {prediction:.2f} kWh."
