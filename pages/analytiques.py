@@ -71,7 +71,7 @@ def render_analytiques(collapsed):
                             children=[
                                 html.Img(src="./assets/energy.ico", className="header-emoji"),
                                 html.H1(
-                                    children="Comsomation Energetique", className="header-title"
+                                    children="consommation énergétique", className="header-title"
                                 ),
                                 html.P(
                                     children=(
@@ -124,15 +124,15 @@ def render_analytiques(collapsed):
                                 dcc.Download(id="download-graphs"),
                                 dcc.Graph(
                                     id="boxplot-chart",
-                                    config={"displayModeBar": False},
+                                    config={"displayModeBar": True},
                                 ),
                                 dcc.Graph(
                                     id="bar-chart",
-                                    config={"displayModeBar": False},
+                                    config={"displayModeBar": True},
                                 ),
                             dcc.Graph(
                                 id="pie-chart",
-                                config={"displayModeBar": False},
+                                config={"displayModeBar": True},
                             ),
                             ],
                             className="wrapper",

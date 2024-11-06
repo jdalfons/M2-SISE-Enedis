@@ -102,7 +102,7 @@ def render_contexte(collapsed):
                     {'if': {'row_index': 'odd'}, 'backgroundColor': '#fafafa'},
                 ],
                 style_header={
-                    'backgroundColor': '#007bff',
+                    'backgroundColor': '#527ead',
                     'fontWeight': 'bold',
                     'color': 'white',
                     'border': '1px solid #ddd',
