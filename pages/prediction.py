@@ -1,58 +1,41 @@
 # pages/prediction.py
-from dash import dcc, html
+from dash import dcc, html, Input, Output, State
+import joblib
+import pandas as pd
+
+# chargement du modele 
+#model = joblib.load("pipeline_ml_regression.pkl")
 
 def render_prediction(collapsed):
-    predictions = html.Div(
+    title_predictions = html.Div(
                     children=[
                         html.Div(
                             children=[
                                 html.Img(src="./assets/energy.ico", className="header-emoji"),
                                 html.H1(
-                                    children="Comsomation Energetique", className="header-title"
+                                    children="Prédictions", className="header-title"
                                 ),
                                 html.P(
                                     children=(
-                                        "Analyse de consommation énergétique "
-                                        " entre les périodes de 2021 et 2023"
+                                        "Prédictions de la consommation énergétique "
+                                        " et etiquette DPE sur le Rhône"
                                     ),
-                                    className="header-description",
+                                    className="header-description" ,
                                 ),
                             ],
                             className="header",
                         ),
-                        html.Div(
-                            children=[
-                                html.Button(
-                                    "Download Graphs", 
-                                    id="download-button", 
-                                    style={
-                                        "background-color": "#0B9ED9", 
-                                        "color": "white", 
-                                        "margin": "0 auto", 
-                                        "display": "block",
-                                        "border-radius": "5px",
-                                        "padding": "10px 20px",
-                                        "margin-top": "20px",
-                                        "font-size": "16px",
-                                        "margin-bottom": "20px",
-                                    }
-                                ),
-                                dcc.Download(id="download-graphs"),
-                                dcc.Graph(
-                                    id="boxplot-chart",
-                                    config={"displayModeBar": False},
-                                ),
-                            ],
-                            className="wrapper",
-                        ),
+                       
                     ]
                 )
     pagecontent_class = "page-content collapsed" if collapsed else "page-content"
 
     return html.Div([
-        html.H2("Prédictions"),
+        #html.H2("Prédictions"),
         
         # Composant d'onglets
+        title_predictions,
+        
         dcc.Tabs([
             # Onglet pour prédire les étiquettes
             dcc.Tab(label="Prédiction des Étiquettes", children=[
@@ -91,29 +74,106 @@ def render_prediction(collapsed):
                 ])
             ]),
 
+
             # Onglet pour prédire la consommation énergétique
             dcc.Tab(label="Prédiction de la Consommation Énergétique", children=[
                 html.Div([
                     html.P("Sélectionnez les paramètres pour estimer la consommation énergétique d'un bien."),
                     
-                    # Conteneur des champs
-                    html.Div(className="fields-container", children=[
-                        # Colonne gauche
-                        html.Div(className="field-group", children=[
-                            dcc.Input(id='text-input-3', type='text', placeholder='Nom du bien'),
-                            dcc.Dropdown(id='select-9', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Surface habitable'),
-                            dcc.Dropdown(id='select-10', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Nombre de pièces'),
-                            dcc.Dropdown(id='select-11', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Type de vitrage'),
-                        ]),
+                # Conteneur des champs
+                html.Div(className="fields-container", children=[
+                    # Colonne gauche
+                    html.Div(className="field-group", children=[
                         
-                        # Colonne droite
-                        html.Div(className="field-group", children=[
-                            dcc.Input(id='text-input-4', type='text', placeholder='Adresse'),
-                            dcc.Dropdown(id='select-12', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Ventilation'),
-                            dcc.Dropdown(id='select-13', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Climatisation'),
-                            dcc.Dropdown(id='select-14', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='État de l\'isolation'),
-                        ]),
+                        # Nom du bien
+                        html.Label("Nom du bien", htmlFor='text-input-3'),
+                        dcc.Input(id='text-input-3', type='text', placeholder='Nom du bien'), 
+
+                          
+                        # Hauteur sous plafond en mètres (1 à 5)
+                        html.Label("Hauteur sous plafond (mètres)", htmlFor='select-11'),
+                        dcc.Slider(
+                            id='select-11', 
+                            min=1, 
+                            max=5, 
+                            step=0.1, 
+                            marks={i: str(i) for i in range(1, 6)}, 
+                            tooltip={"placement": "bottom", "always_visible": True}, 
+                            value=2.5,  # Valeur par défaut
+                        ),
+                        
+                        # Etiquette DPE (A à G)
+                        html.Label("Etiquette DPE", htmlFor='select-9'),
+                        dcc.Dropdown(
+                            id='select-9', 
+                            options=[{'label': label, 'value': label} for label in ['A', 'B', 'C', 'D', 'E', 'F', 'G']], 
+                            placeholder='Etiquette DPE'
+                        ), 
+                        
+                        # Année de construction (1731 à 2024)
+                        html.Label("Année de construction", htmlFor='select-10'),
+                        dcc.Dropdown(
+                            id='select-10', 
+                            options=[{'label': str(year), 'value': year} for year in range(1731, 2025)], 
+                            placeholder='Année de construction'
+                        ), 
+                      
                     ]),
+                    
+                    # Colonne droite
+                    html.Div(className="field-group", children=[
+                        
+                        # Code INSEE (BAN)
+                        html.Label("Code INSEE (BAN)", htmlFor='text-input-4'),
+                        dcc.Input(id='text-input-4', type='text', placeholder='Code INSEE (BAN)'), 
+                        
+                        # Surface habitable en m² (1 à 200, ajustable avec un slider)
+                        html.Label("Surface habitable (m²)", htmlFor='select-12'),
+                        dcc.Slider(
+                            id='select-12', 
+                            min=1, 
+                            max=200, 
+                            step=1, 
+                            marks={i: str(i) for i in range(1, 201, 20)}, 
+                            tooltip={"placement": "bottom", "always_visible": True}, 
+                            value=50,  # Valeur par défaut
+                        ), 
+                        
+                        # Type d'énergie principale pour le chauffage
+                        html.Label("Type d'énergie principale chauffage", htmlFor='select-13'),
+                        dcc.Dropdown(
+                            id='select-13', 
+                            options=[
+                                {'label': 'Réseau de Chauffage urbain', 'value': 'Réseau de Chauffage urbain'},
+                                {'label': 'Gaz naturel', 'value': 'Gaz naturel'},
+                                {'label': 'Fioul domestique', 'value': 'Fioul domestique'},
+                                {'label': 'Électricité', 'value': 'Électricité'},
+                                {'label': 'Bois – Granulés (pellets) ou briquettes', 'value': 'Bois – Granulés (pellets) ou briquettes'},
+                                {'label': 'Bois – Bûches', 'value': 'Bois – Bûches'},
+                                {'label': 'Bois – Plaquettes d’industrie', 'value': 'Bois – Plaquettes d’industrie'},
+                                {'label': 'GPL', 'value': 'GPL'},
+                                {'label': 'Propane', 'value': 'Propane'},
+                                {'label': 'Charbon', 'value': 'Charbon'},
+                                {'label': 'Bois – Plaquettes forestières', 'value': 'Bois – Plaquettes forestières'},
+                                {'label': 'Butane', 'value': 'Butane'},
+                                {'label': "Électricité d'origine renouvelable utilisée dans le bâtiment", 'value': "Électricité d'origine renouvelable utilisée dans le bâtiment"},
+                            ], 
+                            placeholder='Type énergie principale chauffage'
+                        ),
+
+                        # Isolation toiture (0 pour non, 1 pour oui)
+                        html.Label("Isolation toiture", htmlFor='select-14'),
+                        dcc.Dropdown(
+                            id='select-14', 
+                            options=[
+                                {'label': 'Non', 'value': 0},
+                                {'label': 'Oui', 'value': 1}
+                            ], 
+                            placeholder='Isolation toiture'
+                        ),
+                    ]),
+                ]),
+
 
                     # Conteneur du bouton centré
                     html.Div(className="predict-button-container", children=[
@@ -132,4 +192,5 @@ def render_prediction(collapsed):
     ],
         className=pagecontent_class,
         id="pagePrediction"
-    )
+    ) 
+

@@ -235,8 +235,8 @@ body {
     background-color: #F7F7F7;
 }
 
-.header {
-    background-color: #65A637;
+.header  {
+    background-color: #02733E;
     height: 288px;
     padding: 16px 0 0 0;
 }
@@ -259,7 +259,7 @@ body {
 }
 
 .header-description {
-    color: #CFCFCF;
+    color: #FFF !important;
     margin: 4px auto;
     text-align: center;
     max-width: 384px;
@@ -491,11 +491,6 @@ body {
 /* Style général pour la page de prédiction */
 
 /* Style des titres */
-#pagePrediction h2, #pagePrediction h3 {
-    text-align: center;
-    color: #333;
-    font-weight: 600;
-}
 
 /* Style des paragraphes */
 #pagePrediction p {
@@ -503,6 +498,7 @@ body {
     color: #666;
     font-size: 0.9em;
     margin-bottom: 25px;
+    margin-top: 20px;
 }
 
 /* Conteneur des champs */
@@ -522,6 +518,13 @@ body {
     gap: 15px;
 }
 
+/*style pour les labels */
+#pagePrediction label {
+    color: #666;
+    font-size: 0.9em;
+    font-weight: bold;
+   
+}
 /* Champs de texte et de sélection */
 #pagePrediction .field-group input[type="text"],
 #pagePrediction .field-group .dash-dropdown {
