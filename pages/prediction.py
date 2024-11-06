@@ -20,10 +20,12 @@ def render_prediction(collapsed):
                                         "Prédictions de la consommation énergétique "
                                         " et etiquette DPE sur le Rhône"
                                     ),
-                                    className="header-description" ,
+                                    className="header-description",
+                                    
                                 ),
                             ],
                             className="header",
+                            id = "headerprediction"
                         ),
                        
                     ]
@@ -31,8 +33,6 @@ def render_prediction(collapsed):
     pagecontent_class = "page-content collapsed" if collapsed else "page-content"
 
     return html.Div([
-        #html.H2("Prédictions"),
-        
         # Composant d'onglets
         title_predictions,
         
@@ -52,6 +52,7 @@ def render_prediction(collapsed):
                             dcc.Dropdown(id='select-3', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Matériaux de construction'),
                         ]),
                         
+                        
                         # Colonne droite
                         html.Div(className="field-group", children=[
                             dcc.Input(id='text-input-2', type='text', placeholder='Adresse'),
@@ -66,11 +67,18 @@ def render_prediction(collapsed):
                         html.Button('Prédire l\'étiquette', id='predict-label-button', className="predict-button")
                     ]),
 
-                    # Zone de résultats
-                    html.Div(id="resultats-etiquette", className="result-container", children=[
-                        html.H4("Résultat de l'étiquette énergétique :"),
-                        html.P(id="resultat-etiquette-text", children="Le résultat de l'étiquette s'affichera ici après la prédiction.")
-                    ])
+                  
+                    # Zone de résultats avec animation
+                    html.Div(
+                        id="resultats-etiquette", 
+                        className="result-container", 
+                        children=[
+                            html.H4("Résultat de l'étiquette énergétique :"),
+                            html.P(id="resultat-etiquette-text", children="Le résultat de l'étiquette s'affichera ici après la prédiction.")
+                        ],
+                        style={'opacity': 0, 'transition': 'opacity 0.5s ease-in-out'}  # Masquée par défaut avec animation
+                    )
+
                 ])
             ]),
 
@@ -193,6 +201,22 @@ def render_prediction(collapsed):
         className=pagecontent_class,
         id="pagePrediction"
     ) 
+
+#callback pour predire l'etiquette 
+@app.callback(
+    Output("resultat-etiquette-text", "children"),
+    Output("resultats-etiquette", "style"),  # Change le style de la zone de résultats
+    Input("predict-label-button", "n_clicks"),
+    prevent_initial_call=True  # Ne pas déclencher avant un clic
+)
+def predict_etiquette(n_clicks):
+    # Si le bouton n'a pas été cliqué, on ne fait rien
+    if n_clicks is None:
+        return "", {'opacity': 0, 'transition': 'opacity 0.5s ease-in-out'}
+
+    # Lorsque le bouton est cliqué, on affiche la zone de résultats
+    return "Voici la prédiction de l'étiquette énergétique.", {'opacity': 1, 'transition': 'opacity 0.5s ease-in-out'}
+
 
 
 # model = joblib.load("./models/pipeline_ml_regression.pkl")
