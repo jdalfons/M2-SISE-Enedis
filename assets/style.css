@@ -1,7 +1,6 @@
 /*variable couleur , je metterais au propre apres*
 
 
-
 /* Sidebar styles */
 .sidebar {
     width: 250px;
@@ -137,36 +136,37 @@
     }
 }
 
-/* Application de l'animation aux blocs statistiques */
+/* Styles par défaut pour les grands écrans */
+.stats-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem; /* Espace entre les blocs */
+}
+
 .stat-block {
     padding: 1.5rem;
     border-radius: 8px;
-    width: 22%;
+    width: 22%; /* Largeur de chaque bloc pour les grands écrans */
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(135deg, #e0f7e0, #fce4d6); /* Dégradé de couleur moderne */
+    background: linear-gradient(135deg, #e0f7e0, #fce4d6);
     
     /* Animation */
     opacity: 0; 
     animation: fadeInUp 0.6s ease-out forwards;
-    animation-delay: 0.2s; 
+    animation-delay: 0.2s;
     
-    display: flex; 
-    flex-direction: column; 
-    justify-content: space-between; 
-    align-items: center; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Ajustement de la marge pour l'icône et le titre */
 .stat-block i {
-    margin-right: 0.5rem; /* Espace entre l'icône et le texte */
+    margin-right: 0.5rem;
 }
 
-.stat-block h2 {
-    margin-top: 0; /* Enlève la marge supérieure pour centrer le chiffre */
-}
-
-/* Dégradé pour les valeurs de statistiques */
 .stat-value-green {
     color: #4CAF50;
 }
@@ -182,7 +182,6 @@
 .stat-value-red {
     color: #FF4B4B;
 }
-
 
 
 
@@ -314,6 +313,8 @@ body {
     font-weight: bold;
     color: #079A82;
 }
+
+/* style pour la page map map */
 #cost-range-display {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -349,9 +350,9 @@ body {
     padding: 10px;
     border: 1px solid #d3d3d3;
     background-color: #f8f9fa;
-    height: 450px;
     margin: 10px;
     border-radius: 15px;
+    height: auto;
 }
 
 #no-data-message {
@@ -386,15 +387,7 @@ body {
     display: inline-block;
     padding: 10px;
     height: 450px;
-    /* 
-    
-    
-    
-    
-    background-color: #ffffff;
-    
-    
-    border-radius: 15px; */
+   
 }
 
 
@@ -703,9 +696,39 @@ body {
 }
 
 
-/* Responsive pour les petits écrans */
+/* Responsive pour les tablettes */
 @media (max-width: 768px) {
     #pagePrediction .field-group {
         width: 100%;
+    }
+
+    
+}
+
+/* Responsive pour les telephones */
+@media (max-width: 480px) {
+    #pagePrediction .field-group {
+        width: 100%;
+    }
+}
+
+
+/* Media queries pour les écrans de taille moyenne (tablettes) */
+@media (max-width: 768px) {
+    .stat-block {
+        width: 45%; /* Réduit la largeur des blocs pour qu’ils tiennent deux par ligne */
+        margin-bottom: 1rem;
+    }
+}
+
+/* Media queries pour les petits écrans (téléphones) */
+@media (max-width: 480px) {
+    .stats-section {
+        flex-direction: column; /* Empile les blocs verticalement */
+        align-items: center;
+    }
+    .stat-block {
+        width: 90%; /* Largeur presque pleine pour chaque bloc */
+        margin-bottom: 1rem;
     }
 }
