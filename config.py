@@ -1,13 +1,18 @@
+import os
 import dash
 import dash_bootstrap_components as dbc
 
 # Constants for paths
+DATA_DIR = 'data'
+ADDRESSES_FILE = os.path.join(DATA_DIR, 'adresses-69.csv')
+ENERGY_DATA_FILE = os.path.join(DATA_DIR, 'data_output.csv')
 PREDICTION_PATH = "/prediction"
 MAP_PATH = "/map"
 CONTEXTE_PATH = "/contexte"
 ANALYTIQUES_PATH = "/analytiques"
 HOME_PATH = "/"
 DATA = "./data/data_output.csv"
+MODEL_PATH = "models/pipeline_ml_regression.pkl"
 
 external_stylesheets = [
     {
