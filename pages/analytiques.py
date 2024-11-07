@@ -1,6 +1,6 @@
 import pandas as pd
 from dash import html, dcc, Input, Output, State
-from config import app, DATA_DIR, ADDRESSES_FILE, ENERGY_DATA_FILE
+from config import app, DATA_DIR, ADDRESSES_FILE, ENERGY_DATA_FILE, DATASET
 import plotly.io as pio
 import io
 import base64
@@ -21,30 +21,8 @@ communes = ['All'] + addresses_df['nom_commune'].unique().tolist()
 
 @cache.memoize()
 def load_data():
-    data_energy = pd.read_csv(ENERGY_DATA_FILE, low_memory=False, header=0)
-    data_energy = data_energy.merge(addresses_df, left_on='Identifiant__BAN', right_on='id', how='left')
-    data_energy['Periode_construction'] = data_energy['Année_construction'].map(
-        lambda x: 'avant 1960' if x < 1960 else
-                  '1960-1970' if x < 1970 else
-                  '1970-1980' if x < 1980 else
-                  '1980-1990' if x < 1990 else
-                  '1990-2000' if x < 2000 else
-                  '2000-2010' if x < 2010 else
-                  '2010-2020' if x < 2020 else
-                  'apres 2020'
-    )
-    data_energy = data_energy.groupby('Periode_construction').sample(frac=0.7, random_state=1)  # Adjust the fraction as needed
-    
-    q1 = data_energy["Coût_chauffage"].quantile(0.25)
-    q3 = data_energy["Coût_chauffage"].quantile(0.75)
-    iqr = q3 - q1
-    lower_bound = q1 - 1.5 * iqr
-    upper_bound = q3 + 1.5 * iqr
-    data_energy = data_energy[
-        (data_energy["Coût_chauffage"] >= lower_bound) & 
-        (data_energy["Coût_chauffage"] <= upper_bound)
-    ]
-    return data_energy
+    data = pd.read_csv(DATASET, sep=';', dtype={'Isolation_toiture_(0/1)': 'str'}, low_memory=False)
+    return data
 
 data_energy = load_data()
 
