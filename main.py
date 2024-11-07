@@ -7,7 +7,6 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import joblib
 import pandas as pd
-# import joblib  # or pickle, depending on how you saved your model
 
 app = FastAPI()
 
@@ -15,14 +14,15 @@ class PredictionInput(BaseModel):
     """
     Model for input data required for prediction.
     """
-    Type_batiment: str
-    Annee_construction: float
-    Classe_inertie_batiment: str
-    Hauteur_sous_plafond: float
-    Surface_habitable_logement: float
-    Isolation_toiture: float
-    Code_INSEE: str
-    Type_energie_principale_chauffage: str
+    type_batiment: str
+    hauteur_plafond: float
+    etiquette_dpe: str
+    annee_construction: int
+    code_insee: int
+    surface_habitable: float
+    type_energie: str
+    isolation_toiture: int
+    classe_inertie_batiment: str
     
 class PredictionOutput(BaseModel):
     """
@@ -30,19 +30,38 @@ class PredictionOutput(BaseModel):
     """
     Conso_5_usages_e_finale: float
 
-def read_root():
-    """
-    Root endpoint returning a simple greeting.
-    """
 def predict_from_df(df: pd.DataFrame):
     """
     Endpoint for predicting energy consumption from input dictionary.
     """
-    # Load the model
-    model = joblib.load("models/pipeline_ml_regression.pkl")
+    from sklearn.base import BaseEstimator, TransformerMixin
+    import category_encoders as ce
+    import joblib
 
-    # Make predictions on the test set
-    
+    # Transformateur personnalisé pour convertir la colonne isolation toiture en type `str`
+    class ConvertToStrTransformer(BaseEstimator, TransformerMixin):
+        def fit(self, X, y=None):
+            return self  # Rien à ajuster
+        
+        def transform(self, X):
+            # Conversion de la colonne en type `str`
+            return X.astype(str)
+        
+    class TargetEncodingTransformer(BaseEstimator, TransformerMixin):
+        def __init__(self, cols=None):
+            self.cols = cols
+            self.encoder = ce.TargetEncoder(cols=self.cols)
+        
+        def fit(self, X, y):
+            self.encoder.fit(X, y)
+            return self
+        
+        def transform(self, X):
+            return self.encoder.transform(X)
+
+    # Load the model
+    model = joblib.load("./models/scripts/pipeline_ml_regression.pkl")
+    print(model)
     y_pred = model.predict(df)
 
     return y_pred.flatten()
@@ -62,41 +81,44 @@ def predict_from_dict(input_dict: dict):
         
         # Prepare the input data for prediction
         data = [
-            input_data.Type_batiment,
-            input_data.Annee_construction,
-            input_data.Classe_inertie_batiment,
-            input_data.Hauteur_sous_plafond,
-            input_data.Surface_habitable_logement,
-            input_data.Isolation_toiture,
-            input_data.Code_INSEE,
-            input_data.Type_energie_principale_chauffage
+            input_data.type_batiment,
+            input_data.hauteur_plafond,
+            input_data.etiquette_dpe,
+            input_data.annee_construction,
+            input_data.code_insee,
+            input_data.surface_habitable,
+            input_data.type_energie,
+            input_data.isolation_toiture,
+            input_data.classe_inertie_batiment
         ]
-        
-        print(data)
         # Convert the input data to a DataFrame
         input_df = pd.DataFrame([data], columns=[
-            "Type_batiment",
-            "Annee_construction",
-            "Classe_inertie_batiment",
-            "Hauteur_sous_plafond",
-            "Surface_habitable_logement",
-            "Isolation_toiture",
-            "Code_INSEE",
-            "Type_energie_principale_chauffage"
+            "type_batiment",
+            "hauteur_plafond",
+            "etiquette_dpe",
+            "annee_construction",
+            "code_insee",
+            "surface_habitable",
+            "type_energie",
+            "isolation_toiture",
+            "classe_inertie_batiment"
         ])
 
         # Force change types
         input_df = input_df.astype({
-            "Type_batiment": "object",
-            "Annee_construction": "float64",
-            "Classe_inertie_batiment": "object",
-            "Hauteur_sous_plafond": "float64",
-            "Surface_habitable_logement": "float64",
-            "Isolation_toiture": "float64",
-            "Code_INSEE": "object",
-            "Type_energie_principale_chauffage": "object"
+            "type_batiment": "object",
+            "hauteur_plafond": "float64",
+            "etiquette_dpe": "object",
+            "annee_construction": "int64",
+            "code_insee": "int64",
+            "surface_habitable": "float64",
+            "type_energie": "object",
+            "isolation_toiture": "int64",
+            "classe_inertie_batiment": "object"
         })
         
+        prediction = predict_from_df(input_df)
+        # print(input_df)
         return PredictionOutput(Conso_5_usages_e_finale=0.0)
 
     except Exception as e:

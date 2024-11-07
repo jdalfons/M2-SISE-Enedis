@@ -207,4 +207,4 @@ def render_filtered_map(data):
 
     map_html = m._repr_html_()
     map_iframe = html.Iframe(srcDoc=map_html, width='100%', height='600')
-    return html.Div(id='map-container', children=[map_iframe], style={'width': '100%', 'display': 'inline-block'})
+    return html.Div( children=[map_iframe], style={'width': '100%', 'display': 'inline-block'})
