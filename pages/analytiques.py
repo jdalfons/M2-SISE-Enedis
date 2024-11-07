@@ -15,16 +15,13 @@ cache = Cache(app.server, config={
     'CACHE_DEFAULT_TIMEOUT': 300
 })
 
-# Load data and cache it
-addresses_df = pd.read_csv(ADDRESSES_FILE, sep=';')
-communes = ['All'] + addresses_df['nom_commune'].unique().tolist()
-
 @cache.memoize()
 def load_data():
     data = pd.read_csv(DATASET, sep=';', dtype={'Isolation_toiture_(0/1)': 'str'}, low_memory=False)
     return data
 
 data_energy = load_data()
+communes = ['All'] + data_energy['nom_commune'].unique().tolist()
 
 # Precompute filtered datasets and store in cache
 @cache.memoize()
