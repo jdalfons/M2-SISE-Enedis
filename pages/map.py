@@ -3,35 +3,25 @@ import pandas as pd
 import branca
 import folium
 from folium.plugins import MarkerCluster
-from config import app
+from config import app, DATASET
 import os
+import flask_caching 
 
 app.config.suppress_callback_exceptions = True
 
-# Define data types for the CSV columns
-dtype = {
-    'Date_réception_DPE': 'str',
-    'lat': 'float64',
-    'lon': 'float64',
-    'Etiquette_DPE': 'category',
-    'Coût_chauffage': 'float64',
-    'Surface_habitable_logement': 'float64',
-    'Adresse_(BAN)': 'str'
-}
+# Initialize cache
+cache = flask_caching.Cache(app.server, config={
+    'CACHE_TYPE': 'simple',
+    'CACHE_DEFAULT_TIMEOUT': 300
+})
 
-DATA_DIR = 'data'
-ADDRESSES_FILE = os.path.join(DATA_DIR, 'adresses-69.csv')
-ENERGY_DATA_FILE = os.path.join(DATA_DIR, 'data_output.csv')
-
+# Load data and cache it
+@cache.memoize()
 def load_data():
-    """Load and preprocess data."""
-    addresses_df = pd.read_csv(ADDRESSES_FILE, sep=';')
-    data_energy = pd.read_csv(ENERGY_DATA_FILE, low_memory=False, header=0)
-    data_energy = data_energy.merge(addresses_df, left_on='Identifiant__BAN', right_on='id', how='left')
-    data_energy['Date_réception_DPE'] = pd.to_datetime(data_energy['Date_réception_DPE'], format="%Y-%m-%d")
-    data_energy = remove_outliers(data_energy)
-    data_energy = data_energy.dropna(subset=['lat', 'lon'])
-    return data_energy, addresses_df
+    data = pd.read_csv(DATASET, sep=';')
+    data = data.dropna(subset=['nom_commune'])
+    # data = data.groupby('Periode_construction').sample(frac=0.1, random_state=1)  # Adjust the fraction as needed
+    return data
 
 def remove_outliers(data):
     """Remove outliers based on the IQR method."""
@@ -40,9 +30,9 @@ def remove_outliers(data):
     IQR = Q3 - Q1
     return data[~((data[['Coût_chauffage', 'Surface_habitable_logement']] < (Q1 - 1.5 * IQR)) | (data[['Coût_chauffage', 'Surface_habitable_logement']] > (Q3 + 1.5 * IQR))).any(axis=1)]
 
-data_energy, addresses_df = load_data()
+data_energy = load_data()
 etiquet_dpe = data_energy['Etiquette_DPE'].unique().tolist()
-communes = ['All'] + addresses_df['nom_commune'].unique().tolist()
+communes = ['All'] + data_energy['nom_commune'].unique().tolist()
 
 title_map = html.Div(
     children=[

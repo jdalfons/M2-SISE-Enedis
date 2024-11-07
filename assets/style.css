@@ -53,8 +53,9 @@
     justify-content: flex-start; 
 }
 
-.nav-link.active {
-   background-color: #ffd700;
+.sidebar.collapsed .nav-link.active {
+   background-color: #FFF !important;
+   width: 60px;
 }
 
 
@@ -91,6 +92,7 @@
 /* Réduire le style actif en mode replié */
 .sidebar.collapsed .nav-link.active i {
     color: #ffd700; 
+
 }
 
 
