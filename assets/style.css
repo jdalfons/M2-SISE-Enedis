@@ -111,7 +111,7 @@
 
 /*pages homme*/
 /* Centrer le titre principal et lui donner une couleur moderne */
-.main-title {
+.main-title  ,#pageContexte .page-title{
     text-align: center;
     color: #0F7CBF; 
     font-size: 2rem;
@@ -234,10 +234,15 @@ body {
     background-color: #F7F7F7;
 }
 
-.header {
-    background-color: #65A637;
+.header  {
+    background-color: #02733E;
     height: 288px;
     padding: 16px 0 0 0;
+}
+
+#headerprediction{
+    height: 200px !important;
+
 }
 
 .header-emoji {
@@ -258,7 +263,7 @@ body {
 }
 
 .header-description {
-    color: #CFCFCF;
+    color: #FFF !important;
     margin: 4px auto;
     text-align: center;
     max-width: 384px;
@@ -389,8 +394,13 @@ body {
 
 
 /* Styles de base pour la page contexte */
+#pageContexte H3{
+   
+    color: #0F7CBF; 
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
 /* Styles pour les KPI */
-/* Section des KPI */
 .kpi-section {
     display: flex;
     justify-content: space-between; /* Espace entre chaque KPI */
@@ -459,11 +469,59 @@ body {
 }
 
 
-
 .visualizations-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
+}
+
+/*style filtres */
+/* Style global pour la section des filtres */
+.filter-section {
+    margin: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Style pour le conteneur flex des filtres */
+.filters-container {
+    display: flex;
+    flex-wrap: wrap; /* Pour ajustement sur petit écran */
+    gap: 15px; /* Espacement entre les filtres */
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Style individuel pour chaque filtre */
+.filters-container .filter {
+    flex: 1;
+    min-width: 200px; /* Largeur minimale pour chaque filtre */
+    max-width: 300px;
+}
+
+/* Style pour les labels des filtres */
+.filters-container label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    color: #333;
+}
+
+/* Style pour un bouton moderne */
+.apply-filters-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.apply-filters-button:hover {
+    background-color: #0056b3;
 }
 
 .visualization-card {
@@ -473,22 +531,72 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Section de la table de données */
 .data-table-section {
     margin-top: 2rem;
-    padding: 1rem;
+    padding: 1.5rem;
     background-color: #f7f7f7;
     border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+/* Bouton d'export CSV */
+.export-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.export-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.export-button:hover {
+    background-color: #218838;
+}
+
+/* Style des cellules de données */
+.dash-table .cell {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+/* Style des en-têtes */
+.dash-table .header {
+    background-color: #1c3147;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Couleur alternée des lignes */
+.dash-table .row-odd {
+    background-color: #fafafa;
+}
+.dash-table .row-even {
+    background-color: #f3f3f3;
+}
+
+/* Alignement des cellules */
+.dash-table .cell {
+    padding: 10px;
+    text-align: left;
+}
+
 
 
 /* Style général pour la page de prédiction */
 
 /* Style des titres */
-#pagePrediction h2, #pagePrediction h3 {
-    text-align: center;
-    color: #333;
-    font-weight: 600;
-}
 
 /* Style des paragraphes */
 #pagePrediction p {
@@ -496,6 +604,7 @@ body {
     color: #666;
     font-size: 0.9em;
     margin-bottom: 25px;
+    margin-top: 20px;
 }
 
 /* Conteneur des champs */
@@ -515,6 +624,13 @@ body {
     gap: 15px;
 }
 
+/*style pour les labels */
+#pagePrediction label {
+    color: #666;
+    font-size: 0.9em;
+    font-weight: bold;
+   
+}
 /* Champs de texte et de sélection */
 #pagePrediction .field-group input[type="text"],
 #pagePrediction .field-group .dash-dropdown {
