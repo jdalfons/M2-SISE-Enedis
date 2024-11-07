@@ -13,7 +13,7 @@ ANALYTIQUES_PATH = "/analytiques"
 HOME_PATH = "/"
 DATA = "./data/data_output.csv"
 MODEL_PATH = "models/pipeline_ml_regression.pkl"
-DATASET = "https://github.com/jdalfons/M2-SISE-Enedis/blob/c074b82df3434bbd0396e981e773c296cee9968b/datasets/DPE_Enedis_69.csv"
+DATASET = "https://media.githubusercontent.com/media/jdalfons/M2-SISE-Enedis/refs/heads/main/datasets/DPE_Enedis_69.csv"
 # DATASET = "datasets/DPE_Enedis_69.csv"
 
 external_stylesheets = [

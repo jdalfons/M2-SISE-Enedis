@@ -18,17 +18,16 @@ cache = flask_caching.Cache(app.server, config={
 # Load data and cache it
 @cache.memoize()
 def load_data():
-    data = pd.read_csv(DATASET, sep=';')
-    data = data.dropna(subset=['nom_commune'])
-    # data = data.groupby('Periode_construction').sample(frac=0.1, random_state=1)  # Adjust the fraction as needed
-    return data
+    """
+    Load and preprocess the dataset.
+    
+    Returns:
+        pd.DataFrame: Preprocessed data.
+    """
+    data = pd.read_csv(DATASET, sep=';', on_bad_lines='skip') # Return an empty DataFrame in case of error
 
-def remove_outliers(data):
-    """Remove outliers based on the IQR method."""
-    Q1 = data[['Coût_chauffage', 'Surface_habitable_logement']].quantile(0.25)
-    Q3 = data[['Coût_chauffage', 'Surface_habitable_logement']].quantile(0.75)
-    IQR = Q3 - Q1
-    return data[~((data[['Coût_chauffage', 'Surface_habitable_logement']] < (Q1 - 1.5 * IQR)) | (data[['Coût_chauffage', 'Surface_habitable_logement']] > (Q3 + 1.5 * IQR))).any(axis=1)]
+    data = data.dropna(subset=['nom_commune'])
+    return data
 
 data_energy = load_data()
 etiquet_dpe = data_energy['Etiquette_DPE'].unique().tolist()
