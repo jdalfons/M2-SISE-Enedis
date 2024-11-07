@@ -40,29 +40,104 @@ def render_prediction(collapsed):
         title_predictions,
         
         dcc.Tabs([
-            # Onglet pour prédire les étiquettes
+          # Onglet pour prédire les étiquettes
             dcc.Tab(label="Prédiction des Étiquettes", children=[
                 html.Div([
                     html.P("Sélectionnez les paramètres pour estimer l'étiquette énergétique du bien."),
-                    
+
                     # Conteneur des champs
                     html.Div(className="fields-container", children=[
                         # Colonne gauche
                         html.Div(className="field-group", children=[
+                            # Champ Nom du bien
+                            html.Label("Nom du bien", htmlFor='text-input-1'),
                             dcc.Input(id='text-input-1', type='text', placeholder='Nom du bien'),
-                            dcc.Dropdown(id='select-1', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Type de bien'),
-                            dcc.Dropdown(id='select-2', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Année de construction'),
-                            dcc.Dropdown(id='select-3', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Matériaux de construction'),
+
+                            # Champ Année de construction
+                            html.Label("Année de construction", htmlFor='annee_construction'),
+                            dcc.Dropdown(
+                                id='annee_construction',
+                                options=[{'label': str(i), 'value': i} for i in range(1731, 2024)],
+                                placeholder='Sélectionner l\'année de construction'
+                            ),
+
+                            # Champ Surface habitable en m²
+                            html.Label("Surface habitable (m²)", htmlFor='surface_habitable'),
+                            dcc.Input(
+                                id='surface_habitable', 
+                                type='number', 
+                                placeholder='Surface habitable en m²',
+                                min=1, 
+                                max=500, 
+                                step=1
+                            ),
+
+                              # Champ Coût total des 5 usages
+                            html.Label("Coût total des 5 usages (€)", htmlFor='coût_total_5_usages'),
+                            dcc.Input(
+                                id='coût_total_5_usages',
+                                type='number', 
+                                placeholder='Coût total des 5 usages',
+                                min=0, 
+                                step=0.01
+                            ),
+
+                            # Champ Coût ECS
+                            html.Label("Coût ECS (€)", htmlFor='coût_ECS'),
+                            dcc.Input(
+                                id='coût_ECS',
+                                type='number',
+                                placeholder='Coût ECS',
+                                min=0,
+                                step=0.01
+                            )
                         ]),
-                        
-                        
+
                         # Colonne droite
                         html.Div(className="field-group", children=[
-                            dcc.Input(id='text-input-2', type='text', placeholder='Adresse'),
-                            dcc.Dropdown(id='select-4', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Isolation'),
-                            dcc.Dropdown(id='select-5', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Type de chauffage'),
-                            dcc.Dropdown(id='select-6', options=[{'label': f'Option {i}', 'value': i} for i in range(1, 6)], placeholder='Énergie utilisée'),
+                          
+
+                            # Champ Coût chauffage
+                            html.Label("Coût chauffage (€)", htmlFor='coût_chauffage'),
+                            dcc.Input(
+                                id='coût_chauffage',
+                                type='number', 
+                                placeholder='Coût chauffage',
+                                min=0, 
+                                step=0.01
+                            ),
+
+                            # Champ Coût éclairage
+                            html.Label("Coût éclairage (€)", htmlFor='coût_éclairage'),
+                            dcc.Input(
+                                id='coût_éclairage', 
+                                type='number', 
+                                placeholder='Coût éclairage',
+                                min=0, 
+                                step=0.01
+                            ),
+
+                            # Champ Coût auxiliaires
+                            html.Label("Coût auxiliaires (€)", htmlFor='coût_auxiliaires'),
+                            dcc.Input(
+                                id='coût_auxiliaires', 
+                                type='number', 
+                                placeholder='Coût auxiliaires',
+                                min=0, 
+                                step=0.01
+                            ),
+
+                            # Champ Coût refroidissement
+                            html.Label("Coût refroidissement (€)", htmlFor='coût_refroidissement'),
+                            dcc.Input(
+                                id='coût_refroidissement', 
+                                type='number', 
+                                placeholder='Coût refroidissement',
+                                min=0, 
+                                step=0.01
+                            ),
                         ]),
+
                     ]),
 
                     # Conteneur du bouton centré
@@ -70,7 +145,6 @@ def render_prediction(collapsed):
                         html.Button('Prédire l\'étiquette', id='predict-label-button', className="predict-button")
                     ]),
 
-                  
                     # Zone de résultats avec animation
                     html.Div(
                         id="resultats-etiquette", 
@@ -81,7 +155,6 @@ def render_prediction(collapsed):
                         ],
                         style={'opacity': 0, 'transition': 'opacity 0.5s ease-in-out'}  # Masquée par défaut avec animation
                     )
-
                 ])
             ]),
 
@@ -95,6 +168,11 @@ def render_prediction(collapsed):
                 html.Div(className="fields-container", children=[
                     # Colonne gauche
                     html.Div(className="field-group", children=[
+
+                        # CNom du bien
+                        html.Label("Nom du bien", htmlFor='nom_bien'),
+                        dcc.Input(id='nom_bien', type='text', placeholder='Ma maison par exemple'), 
+                        
                         
                         # Type de bâtiment
                         html.Label("Type de bâtiment", htmlFor='type_batiment'),
@@ -217,7 +295,9 @@ def render_prediction(collapsed):
                     html.Div(id="resultats-consommation", className="result-container", children=[
                         html.H4("Résultat de la consommation énergétique :"),
                         html.P(id="resultat-consommation-text", children="Le résultat de la consommation s'affichera ici après la prédiction.")
-                    ])
+                    ],
+                     style={'opacity': 0, 'transition': 'opacity 0.5s ease-in-out'}  # Masquée par défaut avec animation
+                    )
                 ])
             ]),
         ]),
@@ -248,6 +328,7 @@ def predict_etiquette(n_clicks):
 # Callback pour prédire la consommation énergétique
 @app.callback(
     Output('resultat-consommation-text', 'children'),
+    Output("resultats-consommation", "style"),  # Change le style de la zone de résultats
     Input('predict-consumption-button', 'n_clicks'),
     State('type_batiment', 'value'),
     State('hauteur_plafond', 'value'),
@@ -259,9 +340,13 @@ def predict_etiquette(n_clicks):
     State('isolation_toiture', 'value'),
     State('classe_inertie_batiment', 'value')
 )
+
+
+
+
 def predict_consumption(n_clicks, type_batiment, hauteur_plafond, etiquette_dpe, annee_construction, code_insee, surface_habitable, type_energie, isolation_toiture, classe_inertie_batiment):
     if n_clicks is None:
-        return "Le résultat de la consommation s'affichera ici après la prédiction."
+        return "", {'opacity': 0, 'transition': 'opacity 0.5s ease-in-out'}
     
     # Vérification des données manquantes
     missing_fields = []
@@ -285,8 +370,10 @@ def predict_consumption(n_clicks, type_batiment, hauteur_plafond, etiquette_dpe,
         missing_fields.append("Classe inertie bâtiment")
 
     if missing_fields:
-        return f"Erreur: Veuillez remplir tous les champs pour obtenir une prédiction. Champs manquants: {', '.join(missing_fields)}"
+        return f"Erreur: Veuillez remplir tous les champs pour obtenir une prédiction. Champs manquants: {', '.join(missing_fields)}", {'opacity': 1, 'transition': 'opacity 0.5s ease-in-out'}
     
+    
+        
     # Préparation des données pour la prédiction
     data = pd.DataFrame({
         'type_batiment': [type_batiment],

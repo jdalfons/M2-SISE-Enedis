@@ -41,7 +41,7 @@ def render_contexte(collapsed):
     # KPI Section
     kpi_section = html.Div(
         [
-            render_kpi("Total des logements", f"{data_concated.shape[0]}", color="linear-gradient(135deg, #4CAF50, #81C784)", icon_class="fas fa-tags"),
+            render_kpi("Total des logements", f"{data_concated.shape[0]}", color="linear-gradient(135deg, #4CAF50, #81C784)", icon_class="fas fa-tags",),
             render_kpi("Consommation Énergétique Totale Moyenne", f"{round(data_concated['Coût_total_5_usages'].mean(), 2)} €", color="linear-gradient(135deg, #FFC107, #FFD54F)", icon_class="fas fa-calendar-alt"),
             render_kpi("Surface habitable moyenne", f"{round(data_concated['Surface_habitable_logement'].mean(), 2)} m²", color="linear-gradient(135deg, #FF8C00, #FFA726)", icon_class="fas fa-home"),
             render_kpi("Coût moyen de chauffage", f"{round(data_concated['Coût_chauffage'].mean(), 2)} €", color="linear-gradient(135deg, #FF4B4B, #E57373)", icon_class="fas fa-euro-sign"),
