@@ -272,7 +272,7 @@ body {
 .wrapper {
     margin-right: auto;
     margin-left: auto;
-    max-width: 1024px;
+    max-width: 100%;
     padding-right: 10px;
     padding-left: 10px;
     margin-top: 32px;
@@ -591,6 +591,20 @@ body {
     padding: 10px;
     text-align: left;
 }
+/*style analytiques graphes */
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Deux colonnes de largeur égale */
+    gap: 1rem; /* Espace entre les graphiques */
+    padding: 1rem;
+}
+
+/* Sur petits écrans, affichez chaque graphique sur une seule colonne */
+@media (max-width: 768px) {
+    .wrapper {
+        grid-template-columns: 1fr; /* Une seule colonne */
+    }
+}
 
 
 
@@ -632,7 +646,7 @@ body {
    
 }
 /* Champs de texte et de sélection */
-#pagePrediction .field-group input[type="text"],
+#pagePrediction .field-group input[type="text"],#pagePrediction .field-group input[type="number"],
 #pagePrediction .field-group .dash-dropdown {
     width: 100%;
     padding: 12px;
@@ -643,7 +657,7 @@ body {
     box-sizing: border-box;
 }
 
-#pagePrediction .field-group input[type="text"]:focus,
+#pagePrediction .field-group input[type="text"]:focus,#pagePrediction .field-group input[type="number"]:focus,
 #pagePrediction .field-group .dash-dropdown:focus {
     border-color: #007BFF;
     outline: none;
@@ -760,6 +774,17 @@ body {
      
     }
 
+    .stat-block {
+        width: 45%; /* Réduit la largeur des blocs pour qu’ils tiennent deux par ligne */
+        margin-bottom: 1rem;
+    }
+
+    .kpi-section {
+        flex-direction: column;        /* Affiche les éléments en colonne */
+        align-items: center;           /* Centre chaque KPI */
+        gap: 1rem;                     /* Espace entre les KPI en vertical */
+    }
+
     
     #pagePrediction .field-group {
         width: 100%;
@@ -767,13 +792,6 @@ body {
 }
 
 
-/* Media queries pour les écrans de taille moyenne (tablettes) */
-@media (max-width: 768px) {
-    .stat-block {
-        width: 45%; /* Réduit la largeur des blocs pour qu’ils tiennent deux par ligne */
-        margin-bottom: 1rem;
-    }
-}
 
 /* Media queries pour les petits écrans (téléphones) */
 @media (max-width: 480px) {
