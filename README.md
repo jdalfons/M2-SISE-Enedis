@@ -59,19 +59,20 @@ M2-Enedis is a dashboard application built using Dash and Plotly. It provides va
 To send a request to the API, you can use the following example with `curl`:
 
 ```sh
-curl -X POST "http://127.0.0.1:8000/your-endpoint" -H "Content-Type: application/json" -d '{
-    "Type_batiment": "Residential",
-    "Annee_construction": 1990,
-    "Classe_inertie_batiment": "High",
-    "Hauteur_sous_plafond": 2.5,
-    "Surface_habitable_logement": 100.0,
-    "Type_energie_principale_chauffage": "Electric",
-    "Isolation_toiture": 1,
-    "Code_INSEE": "75001"
+curl -X POST "http://127.0.0.1:8000/predict_etiquets" -H "Content-Type: application/json" -d '{
+  "etiquette_dpe": 3.0,
+  "type_batiment": 0.0,
+  "annee_construction": 1921.0,
+  "classe_inertie_batiment": 1.0,
+  "hauteur_sous_plafond": 3.1,
+  "surface_habitable_logement": 50.2,
+  "type_energie_principale_chauffage": 11.0,
+  "isolation_toiture": 1.0,
+  "code_postal_ban": 69002.0
 }'
 ```
 
-Replace `"http://127.0.0.1:8000/your-endpoint"` with the actual endpoint of your API.
+Replace `"http://127.0.0.1:8000/predict_etiquets"` with the actual endpoint of your API.
 
 ## Usage
 
