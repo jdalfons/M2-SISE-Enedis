@@ -76,10 +76,11 @@ Replace `"http://127.0.0.1:8000/predict_etiquets"` with the actual endpoint of y
 
 ## Usage
 
-- **Home Page:** Provides an introduction and key performance indicators (KPIs).
-- **Prediction Page:** Allows users to make predictions using the trained machine learning model.
-- **Context Page:** Displays various statistics and graphs.
+- **Home Page:** Provides an introduction of our solution.
+- **Context Page:** Provides an introduction of data and key performance indicators (KPIs).
 - **Map Page:** Shows interactive maps for data visualization.
+- **Analytiques:** Allows users to visualize energy consumption data through interactive graphs for deeper insights and trend analysis.
+- **Prediction Page:** Allows users to make predictions using the trained machine learning model.
 
 ## License
 
