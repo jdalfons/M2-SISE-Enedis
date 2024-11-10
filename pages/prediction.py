@@ -45,9 +45,9 @@ def render_prediction(collapsed):
                             html.Label("Nom du bien", htmlFor='nom_du_bien'),
                             dcc.Input(id='nom_du_bien', type='text', placeholder='Nom du bien'),
                             # Champ Année de construction
-                            html.Label("Année de construction", htmlFor='annee_construction'),
+                            html.Label("Année de construction", htmlFor='annee_construction_label'),
                             dcc.Dropdown(
-                                id='annee_construction',
+                                id='annee_construction_label',
                                 options=[{'label': str(i), 'value': i} for i in range(1731, 2024)],
                                 placeholder='Sélectionner l\'année de construction'
                             ),
@@ -279,7 +279,7 @@ def render_prediction(collapsed):
     Output("resultats-etiquette", "style"),  # Change le style de la zone de résultats
     Input("predict-label-button", "n_clicks"),
     State('nom_du_bien', 'value'),
-    State('annee_construction', 'value'),
+    State('annee_construction_label', 'value'),
     State('surface_habitable', 'value'),
     State('coût_total_5_usages', 'value'),
     State('coût_ECS', 'value'),
@@ -289,47 +289,48 @@ def render_prediction(collapsed):
     State('coût_refroidissement', 'value'),
     prevent_initial_call=True  # Ne pas déclencher avant un clic
 )
-def predict_etiquette(n_clicks, nom_du_bien, annee_construction, surface_habitable, coût_total_5_usages, coût_ECS, coût_chauffage, coût_éclairage, coût_auxiliaires, coût_refroidissement):
+def predict_etiquette(n_clicks, nom_du_bien, annee_construction_label, surface_habitable, coût_total_5_usages, coût_ECS, coût_chauffage, coût_éclairage, coût_auxiliaires, coût_refroidissement):
     # Si le bouton n'a pas été cliqué, on ne fait rien
     if n_clicks is None:
         return "", {'opacity': 0, 'transition': 'opacity 0.5s ease-in-out'}
 
+    print(n_clicks, nom_du_bien, annee_construction_label, surface_habitable, coût_total_5_usages, coût_ECS, coût_chauffage, coût_éclairage, coût_auxiliaires, coût_refroidissement)
     # Vérification des données manquantes
     missing_fields = []
     if not nom_du_bien:
         missing_fields.append("Nom du bien")
-    if not annee_construction:
+    if not annee_construction_label:
         missing_fields.append("Année de construction")
-    if not surface_habitable:
+    if surface_habitable is None or surface_habitable <= 0:
         missing_fields.append("Surface habitable")
-    if not coût_total_5_usages:
+    if coût_total_5_usages is None or coût_total_5_usages <= 0:
         missing_fields.append("Coût total des 5 usages")
-    if not coût_ECS:
+    if coût_ECS is None or coût_ECS < 0:
         missing_fields.append("Coût ECS")
-    if not coût_chauffage:
+    if coût_chauffage is None or coût_chauffage < 0:
         missing_fields.append("Coût chauffage")
-    if not coût_éclairage:
+    if coût_éclairage is None or coût_éclairage < 0:
         missing_fields.append("Coût éclairage")
-    if not coût_auxiliaires:
+    if coût_auxiliaires is None or coût_auxiliaires < 0:
         missing_fields.append("Coût auxiliaires")
-    if not coût_refroidissement:
+    if coût_refroidissement is None or coût_refroidissement < 0:
         missing_fields.append("Coût refroidissement")
 
     if missing_fields:
         return f"Erreur: Veuillez remplir tous les champs pour obtenir une prédiction. Champs manquants: {', '.join(missing_fields)}", {'opacity': 1, 'transition': 'opacity 0.5s ease-in-out'}
     else:
         data = pd.DataFrame({
-            'Année_construction': [annee_construction],
-            'Surface_habitable_logement': [surface_habitable],
-            'Coût_total_5_usages': [coût_total_5_usages],
-            'Coût_ECS': [coût_ECS],
-            'Coût_chauffage': [coût_chauffage],
-            'Coût_éclairage': [coût_éclairage],
-            'Coût_auxiliaires': [coût_auxiliaires],
-            'Coût_refroidissement': [coût_refroidissement]
+            'annee_construction': [annee_construction_label],
+            'surface_habitable_logement': [surface_habitable],
+            'cout_total_5_usages': [coût_total_5_usages],
+            'cout_ECS': [coût_ECS],
+            'cout_chauffage': [coût_chauffage],
+            'cout_eclairage': [coût_éclairage],
+            'cout_auxiliaires': [coût_auxiliaires],
+            'cout_refroidissement': [coût_refroidissement]
         })
         # Prédiction
-        MODEL, encoder = joblib.load('./models/pipeline_ml_regression.pkl')
+        MODEL, encoder = joblib.load('./models/pipeline_ml_classification.pkl')
         prediction = MODEL.predict(data)
         prediction_decoded = encoder.inverse_transform(prediction)
         # Lorsque le bouton est cliqué et que tous les champs sont remplis, on affiche la zone de résultats
