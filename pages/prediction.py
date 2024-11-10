@@ -349,9 +349,24 @@ def predict_etiquette(n_clicks, nom_du_bien, annee_construction, surface_habitab
 
     if missing_fields:
         return f"Erreur: Veuillez remplir tous les champs pour obtenir une prédiction. Champs manquants: {', '.join(missing_fields)}", {'opacity': 1, 'transition': 'opacity 0.5s ease-in-out'}
-
-    # Lorsque le bouton est cliqué et que tous les champs sont remplis, on affiche la zone de résultats
-    return "Voici la prédiction de l'étiquette énergétique.", {'opacity': 1, 'transition': 'opacity 0.5s ease-in-out'}
+    else:
+        data = pd.DataFrame({
+            'Année_construction': [annee_construction],
+            'Surface_habitable_logement': [surface_habitable],
+            'Coût_total_5_usages': [coût_total_5_usages],
+            'Coût_ECS': [coût_ECS],
+            'Coût_chauffage': [coût_chauffage],
+            'Coût_éclairage': [coût_éclairage],
+            'Coût_auxiliaires': [coût_auxiliaires],
+            'Coût_refroidissement': [coût_refroidissement]
+        })
+        import joblib
+        # Prédiction
+        MODEL, encoder = joblib.load('./models/pipeline_ml_regression.pkl')
+        prediction = MODEL.predict(data)
+        prediction_decoded = encoder.inverse_transform(prediction)
+        # Lorsque le bouton est cliqué et que tous les champs sont remplis, on affiche la zone de résultats
+        return f"Voici la prédiction de l'étiquette énergétique : {prediction_decoded[0]}", {'opacity': 1, 'transition': 'opacity 0.5s ease-in-out'}
 
 
 
