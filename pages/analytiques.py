@@ -3,7 +3,6 @@ import pandas as pd
 from dash import html, dcc, Input, Output, State
 from config import app, load_data
 import plotly.io as pio
-import pickle
 from sklearn.linear_model import LinearRegression
 
 data_energy = load_data()
@@ -24,9 +23,6 @@ def render_analytiques(collapsed):
     model = LinearRegression()
     model.fit(X, y)
 
-    # Save the model to a file
-    with open('energy_model.pkl', 'wb') as f:
-        pickle.dump(model, f)
     analytics = html.Div(
                     children=[
                         html.Div(
