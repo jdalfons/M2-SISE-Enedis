@@ -10,7 +10,7 @@ import pandas as pd
 app = FastAPI()
 
 
-class PredictionInput(BaseModel):
+class PredictionRegInput(BaseModel):
     """
     Model for input data required for prediction.
     """
@@ -25,12 +25,30 @@ class PredictionInput(BaseModel):
     code_postal_ban: float
 
 
-class PredictionOutput(BaseModel):
+class PredictionRegOutput(BaseModel):
     """
     Model for output data of the prediction.
     """
     Conso_5_usages_e_finale: float
 
+class PredictionClassifInput(BaseModel):
+    """
+    Model for input data required for prediction.
+    """
+    annee_construction: float
+    surface_habitable_logement: float
+    cout_total_5_usages: float
+    cout_ecs: float
+    cout_chauffage: float
+    cout_eclairage: float
+    cout_auxiliaires: float
+    cout_refroidissement: float
+    
+class PredictionClassifOutput(BaseModel):
+    """
+    Model for output data of the prediction.
+    """
+    predict_label: str
 
 def predict_from_df(df: pd.DataFrame):
     """
@@ -50,15 +68,75 @@ def predict_from_df(df: pd.DataFrame):
 def read_root():
     return {"Hello": "World"}
 
+@app.post("/predict_label", response_model=PredictionClassifOutput)
+def predict_label(input_dict: dict):
+    try:
+        if not input_dict:
+            raise HTTPException(status_code=400, detail="Input dictionary is empty")
 
-@app.post("/predict_consomation", response_model=PredictionOutput)
+        # Convert input_dict to PredictionClassifInput model
+        input_data = PredictionClassifInput(**input_dict)
+        
+        COLUMN_NAMES = [
+            "annee_construction",
+            "surface_habitable_logement",
+            "cout_total_5_usages",
+            "cout_ECS",
+            "cout_chauffage",
+            "cout_eclairage",
+            "cout_auxiliaires",
+            "cout_refroidissement"
+        ]
+
+        data = [
+            input_data.annee_construction,
+            input_data.surface_habitable_logement,
+            input_data.cout_total_5_usages,
+            input_data.cout_ecs,
+            input_data.cout_chauffage,
+            input_data.cout_eclairage,
+            input_data.cout_auxiliaires,
+            input_data.cout_refroidissement
+        ]
+
+        # # Prepare the input data for prediction
+        input_df = pd.DataFrame([data], columns=COLUMN_NAMES)
+        
+        input_df = input_df.astype({
+            "annee_construction": "float64",
+            "surface_habitable_logement": "float64",
+            "cout_total_5_usages": "float64",
+            "cout_ECS": "float64",
+            "cout_chauffage": "float64",
+            "cout_eclairage": "float64",
+            "cout_auxiliaires": "float64",
+            "cout_refroidissement": "float64"
+        })
+        # return "hello"
+
+        # # Reshape the data for prediction
+        # data = input_df.values.reshape(1, -1)
+        print(input_df.values)
+        # # Load the model and encoder
+        model, encoder = joblib.load('./models/pipeline_ml_classification.pkl')
+        prediction = model.predict(input_df)
+        prediction_decoded = encoder.inverse_transform(prediction)
+
+        # return PredictionClassifOutput(predict_label=round(45.900, 2))
+        return PredictionClassifOutput(predict_label=prediction_decoded[0])
+        # return "Hello"
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/predict_consomation", response_model=PredictionRegOutput)
 def predict_from_dict(input_dict: dict):
     try:
         if not input_dict:
             raise HTTPException(status_code=400, detail="Input dictionary is empty")
 
-        # Convert input_dict to PredictionInput model
-        input_data = PredictionInput(**input_dict)
+        # Convert input_dict to PredictionRegInput model
+        input_data = PredictionRegInput(**input_dict)
 
         # Prepare the input data for prediction
         data = [
@@ -100,7 +178,7 @@ def predict_from_dict(input_dict: dict):
         })
 
         prediction = predict_from_df(input_df)
-        return PredictionOutput(Conso_5_usages_e_finale=round(prediction, 2))
+        return PredictionRegOutput(Conso_5_usages_e_finale=round(prediction, 2))
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

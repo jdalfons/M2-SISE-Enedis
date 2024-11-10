@@ -19,10 +19,11 @@ PREDICTION_PATH = "/prediction"
 CONTEXTE_PATH = "/contexte"
 ANALYTIQUES_PATH = "/analytiques"
 
-DATASET = (
-    "https://media.githubusercontent.com/media/jdalfons/"
-    "M2-SISE-Enedis/refs/heads/main/datasets/DPE_Enedis_69.csv"
-)
+# DATASET = (
+#     "https://media.githubusercontent.com/media/jdalfons/"
+#     "M2-SISE-Enedis/refs/heads/main/datasets/DPE_Enedis_69.csv"
+# )
+DATASET = "datasets/DPE_Enedis_69.csv"
 REG_MODEL_PATH = "models/pipeline_ml_regression.pkl"
 
 def load_data():
