@@ -50,8 +50,8 @@ def render_prediction(collapsed):
                         # Colonne gauche
                         html.Div(className="field-group", children=[
                             # Champ Nom du bien
-                            html.Label("Nom du bien", htmlFor='text-input-1'),
-                            dcc.Input(id='text-input-1', type='text', placeholder='Nom du bien'),
+                            html.Label("Nom du bien", htmlFor='nom_du_bien'),
+                            dcc.Input(id='nom_du_bien', type='text', placeholder='Nom du bien'),
 
                             # Champ Année de construction
                             html.Label("Année de construction", htmlFor='annee_construction'),
@@ -179,9 +179,9 @@ def render_prediction(collapsed):
                         dcc.Dropdown(
                             id='type_batiment', 
                             options=[
-                                {'label': 'Maison', 'value': 'Maison'},
-                                {'label': 'Appartement', 'value': 'Appartement'},
-                                {'label': 'Immeuble', 'value': 'Immeuble'}
+                                {'label': 'Maison', 'value': 2},
+                                {'label': 'Appartement', 'value': 0},
+                                {'label': 'Immeuble', 'value': 1}
                             ], 
                             placeholder='Type de bâtiment'
                         ), 
@@ -203,7 +203,15 @@ def render_prediction(collapsed):
                         html.Label("Etiquette DPE", htmlFor='etiquette_dpe'),
                         dcc.Dropdown(
                             id='etiquette_dpe', 
-                            options=[{'label': label, 'value': label} for label in ['A', 'B', 'C', 'D', 'E', 'F', 'G']], 
+                            options=[
+                                {'label': 'A', 'value': 0},
+                                {'label': 'B', 'value': 1},
+                                {'label': 'C', 'value': 2},
+                                {'label': 'D', 'value': 3},
+                                {'label': 'E', 'value': 4},
+                                {'label': 'F', 'value': 5},
+                                {'label': 'G', 'value': 6}
+                            ], 
                             placeholder='Etiquette DPE'
                         ), 
                         
@@ -220,9 +228,9 @@ def render_prediction(collapsed):
                     # Colonne droite
                     html.Div(className="field-group", children=[
                         
-                        # Code INSEE (BAN)
-                        html.Label("Code INSEE (BAN)", htmlFor='code_insee'),
-                        dcc.Input(id='code_insee', type='text', placeholder='Code INSEE (BAN)'), 
+                        # Code Postal (BAN)
+                        html.Label("Code Postal (BAN)", htmlFor='code_postal'),
+                        dcc.Input(id='code_postal', type='text', placeholder='Code Postal (BAN)'), 
                         
                         # Surface habitable en m² (1 à 200, ajustable avec un slider)
                         html.Label("Surface habitable (m²)", htmlFor='surface_habitable'),
@@ -241,19 +249,18 @@ def render_prediction(collapsed):
                         dcc.Dropdown(
                             id='type_energie', 
                             options=[
-                                {'label': 'Réseau de Chauffage urbain', 'value': 'Réseau de Chauffage urbain'},
-                                {'label': 'Gaz naturel', 'value': 'Gaz naturel'},
-                                {'label': 'Fioul domestique', 'value': 'Fioul domestique'},
-                                {'label': 'Électricité', 'value': 'Électricité'},
-                                {'label': 'Bois – Granulés (pellets) ou briquettes', 'value': 'Bois – Granulés (pellets) ou briquettes'},
-                                {'label': 'Bois – Bûches', 'value': 'Bois – Bûches'},
-                                {'label': 'Bois – Plaquettes d’industrie', 'value': 'Bois – Plaquettes d’industrie'},
-                                {'label': 'GPL', 'value': 'GPL'},
-                                {'label': 'Propane', 'value': 'Propane'},
-                                {'label': 'Charbon', 'value': 'Charbon'},
-                                {'label': 'Bois – Plaquettes forestières', 'value': 'Bois – Plaquettes forestières'},
-                                {'label': 'Butane', 'value': 'Butane'},
-                                {'label': "Électricité d'origine renouvelable utilisée dans le bâtiment", 'value': "Électricité d'origine renouvelable utilisée dans le bâtiment"},
+                                {'label': 'Réseau de Chauffage urbain', 'value': 9},
+                                {'label': 'Gaz naturel', 'value': 7},
+                                {'label': 'Fioul domestique', 'value': 12},
+                                {'label': 'Électricité', 'value': 10},
+                                {'label': 'Bois – Granulés (pellets) ou briquettes', 'value': 0},
+                                {'label': 'Bois – Bûches', 'value': 5},
+                                {'label': 'Bois – Plaquettes d’industrie', 'value': 8},
+                                {'label': 'Bois – Plaquettes forestières', 'value': 2},
+                                {'label': 'GPL', 'value': 1},
+                                {'label': 'Propane', 'value': 6},
+                                {'label': 'Charbon', 'value': 3},
+                                {'label': "Électricité d'origine renouvelable utilisée dans le bâtiment", 'value': 4},
                             ], 
                             placeholder='Type énergie principale chauffage'
                         ),
@@ -264,8 +271,8 @@ def render_prediction(collapsed):
                             id='isolation_toiture', 
                             options=[
                                 {'label': 'Non', 'value': 0},
-                                {'label': 'Oui', 'value': 1},
-                                {'label': 'Inconnue', 'value': 2}
+                                {'label': 'Oui', 'value': 2},
+                                {'label': 'Inconnue', 'value': 1}
                             ], 
                             placeholder='Isolation toiture'
                         ),
@@ -275,10 +282,10 @@ def render_prediction(collapsed):
                         dcc.Dropdown(
                             id='classe_inertie_batiment', 
                             options=[
-                                {'label': 'Légère', 'value': 'Légère'},
-                                {'label': 'Moyenne', 'value': 'Moyenne'},
-                                {'label': 'Lourde', 'value': 'Lourde'},
-                                {'label': 'Très lourde', 'value': 'Très lourde'}
+                                {'label': 'Légère', 'value': 1},
+                                {'label': 'Moyenne', 'value': 2},
+                                {'label': 'Lourde', 'value': 0},
+                                {'label': 'Très lourde', 'value': 3}
                             ], 
                             placeholder='Classe inertie bâtiment'
                         ),
@@ -314,12 +321,36 @@ def render_prediction(collapsed):
     Input("predict-label-button", "n_clicks"),
     prevent_initial_call=True  # Ne pas déclencher avant un clic
 )
-def predict_etiquette(n_clicks):
+def predict_etiquette(n_clicks, nom_du_bien, annee_construction, surface_habitable, coût_total_5_usages, coût_ECS, coût_chauffage, coût_éclairage, coût_auxiliaires, coût_refroidissement):
     # Si le bouton n'a pas été cliqué, on ne fait rien
     if n_clicks is None:
         return "", {'opacity': 0, 'transition': 'opacity 0.5s ease-in-out'}
 
-    # Lorsque le bouton est cliqué, on affiche la zone de résultats
+    # Vérification des données manquantes
+    missing_fields = []
+    if not nom_du_bien:
+        missing_fields.append("Nom du bien")
+    if not annee_construction:
+        missing_fields.append("Année de construction")
+    if not surface_habitable:
+        missing_fields.append("Surface habitable")
+    if not coût_total_5_usages:
+        missing_fields.append("Coût total des 5 usages")
+    if not coût_ECS:
+        missing_fields.append("Coût ECS")
+    if not coût_chauffage:
+        missing_fields.append("Coût chauffage")
+    if not coût_éclairage:
+        missing_fields.append("Coût éclairage")
+    if not coût_auxiliaires:
+        missing_fields.append("Coût auxiliaires")
+    if not coût_refroidissement:
+        missing_fields.append("Coût refroidissement")
+
+    if missing_fields:
+        return f"Erreur: Veuillez remplir tous les champs pour obtenir une prédiction. Champs manquants: {', '.join(missing_fields)}", {'opacity': 1, 'transition': 'opacity 0.5s ease-in-out'}
+
+    # Lorsque le bouton est cliqué et que tous les champs sont remplis, on affiche la zone de résultats
     return "Voici la prédiction de l'étiquette énergétique.", {'opacity': 1, 'transition': 'opacity 0.5s ease-in-out'}
 
 
@@ -334,7 +365,7 @@ def predict_etiquette(n_clicks):
     State('hauteur_plafond', 'value'),
     State('etiquette_dpe', 'value'),
     State('annee_construction', 'value'),
-    State('code_insee', 'value'),
+    State('code_postal', 'value'),
     State('surface_habitable', 'value'),
     State('type_energie', 'value'),
     State('isolation_toiture', 'value'),
@@ -342,31 +373,29 @@ def predict_etiquette(n_clicks):
 )
 
 
-
-
-def predict_consumption(n_clicks, type_batiment, hauteur_plafond, etiquette_dpe, annee_construction, code_insee, surface_habitable, type_energie, isolation_toiture, classe_inertie_batiment):
+def predict_consumption(n_clicks, type_batiment, hauteur_plafond, etiquette_dpe, annee_construction, code_postal, surface_habitable, type_energie, isolation_toiture, classe_inertie_batiment):
     if n_clicks is None:
         return "", {'opacity': 0, 'transition': 'opacity 0.5s ease-in-out'}
     
     # Vérification des données manquantes
     missing_fields = []
-    if not type_batiment:
+    if not type_batiment >= 0:
         missing_fields.append("Type de bâtiment")
     if not hauteur_plafond:
         missing_fields.append("Hauteur sous plafond")
-    if not etiquette_dpe:
+    if not etiquette_dpe >= 0:
         missing_fields.append("Etiquette DPE")
     if not annee_construction:
         missing_fields.append("Année de construction")
-    if not code_insee:
-        missing_fields.append("Code INSEE")
+    if not code_postal:
+        missing_fields.append("Code Postal")
     if not surface_habitable:
         missing_fields.append("Surface habitable")
-    if not type_energie:
+    if not type_energie > 0:
         missing_fields.append("Type d'énergie principale chauffage")
-    if not isolation_toiture:
+    if not isolation_toiture > 0:
         missing_fields.append("Isolation toiture")
-    if not classe_inertie_batiment:
+    if not classe_inertie_batiment > 0:
         missing_fields.append("Classe inertie bâtiment")
 
     if missing_fields:
@@ -376,46 +405,26 @@ def predict_consumption(n_clicks, type_batiment, hauteur_plafond, etiquette_dpe,
         
     # Préparation des données pour la prédiction
     data = pd.DataFrame({
-        'type_batiment': [type_batiment],
-        'hauteur_plafond': [hauteur_plafond],
-        'etiquette_dpe': [etiquette_dpe],
-        'annee_construction': [annee_construction],
-        'code_insee': [code_insee],
-        'surface_habitable': [surface_habitable],
-        'type_energie': [type_energie],
+        'Type_énergie_principale_chauffage': [type_energie],
+        'Hauteur_sous-plafond': [hauteur_plafond],
+        'Classe_inertie_bâtiment': [classe_inertie_batiment],
+        'Année_construction': [annee_construction],
+        'Type_bâtiment': [type_batiment],
+        'Surface_habitable_logement': [surface_habitable],
+        'Etiquette_DPE': [etiquette_dpe],
         'isolation_toiture': [isolation_toiture],
-        'classe_inertie_batiment': [classe_inertie_batiment]
+        'code_postal': [code_postal],
     })
+        
     from sklearn.base import BaseEstimator, TransformerMixin
     import category_encoders as ce
     import joblib
 
-    # Transformateur personnalisé pour convertir la colonne isolation toiture en type `str`
-    class ConvertToStrTransformer(BaseEstimator, TransformerMixin):
-        def fit(self, X, y=None):
-            return self  # Rien à ajuster
-        
-        def transform(self, X):
-            # Conversion de la colonne en type `str`
-            return X.astype(str)
-        
-    class TargetEncodingTransformer(BaseEstimator, TransformerMixin):
-        def __init__(self, cols=None):
-            self.cols = cols
-            self.encoder = ce.TargetEncoder(cols=self.cols)
-        
-        def fit(self, X, y):
-            self.encoder.fit(X, y)
-            return self
-        
-        def transform(self, X):
-            return self.encoder.transform(X)
-        print(data)
-
     # Prédiction
-    MODEL = joblib.load('./models/scripts/pipeline_ml_regression.pkl')
-    prediction = MODEL.predict(data)[0]
+    MODEL = joblib.load('./models/pipeline_ml_regression.pkl')
+    prediction = MODEL.predict(data)
 
 
     
-    return f"La consommation énergétique estimée est de {prediction:.2f} kWh."
+    return f"La consommation énergétique estimée est de {prediction[0]:.2f} kWh.", {'opacity': 1, 'transition': 'opacity 0.5s ease-in-out'}
+    

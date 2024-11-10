@@ -14,15 +14,15 @@ class PredictionInput(BaseModel):
     """
     Model for input data required for prediction.
     """
-    type_batiment: str
-    hauteur_plafond: float
-    etiquette_dpe: str
-    annee_construction: int
-    code_insee: int
-    surface_habitable: float
-    type_energie: str
-    isolation_toiture: int
-    classe_inertie_batiment: str
+    etiquette_dpe: float
+    type_batiment: float
+    annee_construction: float
+    classe_inertie_batiment: float
+    hauteur_sous_plafond: float
+    surface_habitable_logement: float
+    type_energie_principale_chauffage: float
+    isolation_toiture: float
+    code_postal_ban: float
     
 class PredictionOutput(BaseModel):
     """
@@ -38,33 +38,14 @@ def predict_from_df(df: pd.DataFrame):
     import category_encoders as ce
     import joblib
 
-    # Transformateur personnalisé pour convertir la colonne isolation toiture en type `str`
-    class ConvertToStrTransformer(BaseEstimator, TransformerMixin):
-        def fit(self, X, y=None):
-            return self  # Rien à ajuster
-        
-        def transform(self, X):
-            # Conversion de la colonne en type `str`
-            return X.astype(str)
-        
-    class TargetEncodingTransformer(BaseEstimator, TransformerMixin):
-        def __init__(self, cols=None):
-            self.cols = cols
-            self.encoder = ce.TargetEncoder(cols=self.cols)
-        
-        def fit(self, X, y):
-            self.encoder.fit(X, y)
-            return self
-        
-        def transform(self, X):
-            return self.encoder.transform(X)
 
-    # Load the model
-    model = joblib.load("./models/scripts/pipeline_ml_regression.pkl")
-    print(model)
+    # # Load the model
+    model = joblib.load("./models/pipeline_ml_regression.pkl")
+    # print(df)
     y_pred = model.predict(df)
 
-    return y_pred.flatten()
+    # return 0.0
+    return y_pred[0]
 
 @app.get("/")
 def read_root():
@@ -81,45 +62,46 @@ def predict_from_dict(input_dict: dict):
         
         # Prepare the input data for prediction
         data = [
-            input_data.type_batiment,
-            input_data.hauteur_plafond,
             input_data.etiquette_dpe,
+            input_data.type_batiment,
             input_data.annee_construction,
-            input_data.code_insee,
-            input_data.surface_habitable,
-            input_data.type_energie,
+            input_data.classe_inertie_batiment,
+            input_data.hauteur_sous_plafond,
+            input_data.surface_habitable_logement,
+            input_data.type_energie_principale_chauffage,
             input_data.isolation_toiture,
-            input_data.classe_inertie_batiment
+            input_data.code_postal_ban
         ]
         # Convert the input data to a DataFrame
         input_df = pd.DataFrame([data], columns=[
-            "type_batiment",
-            "hauteur_plafond",
-            "etiquette_dpe",
-            "annee_construction",
-            "code_insee",
-            "surface_habitable",
-            "type_energie",
-            "isolation_toiture",
-            "classe_inertie_batiment"
+            "Etiquette_DPE",
+            "Type_bâtiment",
+            "Année_construction",
+            "Classe_inertie_bâtiment",
+            "Hauteur_sous-plafond",
+            "Surface_habitable_logement",
+            "Type_énergie_principale_chauffage",
+            "Isolation_toiture_(0/1)",
+            "Code_postal_(BAN)"
         ])
 
         # Force change types
         input_df = input_df.astype({
-            "type_batiment": "object",
-            "hauteur_plafond": "float64",
-            "etiquette_dpe": "object",
-            "annee_construction": "int64",
-            "code_insee": "int64",
-            "surface_habitable": "float64",
-            "type_energie": "object",
-            "isolation_toiture": "int64",
-            "classe_inertie_batiment": "object"
+            "Etiquette_DPE": "float64",
+            "Type_bâtiment": "float64",
+            "Année_construction": "float64",
+            "Classe_inertie_bâtiment": "float64",
+            "Hauteur_sous-plafond": "float64",
+            "Surface_habitable_logement": "float64",
+            "Type_énergie_principale_chauffage": "float64",
+            "Isolation_toiture_(0/1)": "float64",
+            "Code_postal_(BAN)": "float64"
         })
         
         prediction = predict_from_df(input_df)
+        # print(prediction)
         # print(input_df)
-        return PredictionOutput(Conso_5_usages_e_finale=0.0)
+        return PredictionOutput(Conso_5_usages_e_finale=round(prediction, 2))
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

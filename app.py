@@ -61,6 +61,7 @@ def display_page(pathname, collapsed):
         return analytiques.render_analytiques(collapsed=collapsed)
     return home.render_home(collapsed=collapsed)
 
+
 # Callback pour gérer le repliement de la sidebar
 app.callback(
     Output("sidebar-container", "children"),
