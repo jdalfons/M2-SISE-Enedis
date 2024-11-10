@@ -1,5 +1,6 @@
 from dash import html
 
+
 def render_home(collapsed):
     pagecontent_class = "page-content collapsed" if collapsed else "page-content"
     # Zone avec les 4 blocs horizontaux
@@ -23,7 +24,7 @@ def render_home(collapsed):
                 ],
                 className="text-section-left"  # Style pour la colonne gauche
             ),
-            
+
             # Colonne de vidéo à droite
             html.Div(
                 [

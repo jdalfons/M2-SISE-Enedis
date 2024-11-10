@@ -12,14 +12,12 @@ from config import (
     ANALYTIQUES_PATH, 
     HOME_PATH)
 
-
-
 # Layout principal
 app.layout = html.Div([
     dcc.Location(id="url", refresh=False),
     dcc.Store(id="sidebar-collapsed", data=False),  
     html.Div(id="sidebar-container", children=create_sidebar(collapsed=False)),
-    html.Div(id="page-content")
+    dcc.Loading(id="loading-page-content", children=[html.Div(id="page-content")], type="circle")
 ])
 
 def toggle_sidebar(n_clicks, collapsed):
@@ -60,7 +58,6 @@ def display_page(pathname, collapsed):
     elif pathname == ANALYTIQUES_PATH:
         return analytiques.render_analytiques(collapsed=collapsed)
     return home.render_home(collapsed=collapsed)
-
 
 # Callback pour gérer le repliement de la sidebar
 app.callback(
