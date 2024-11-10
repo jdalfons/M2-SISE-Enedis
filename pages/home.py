@@ -1,5 +1,6 @@
 from dash import html
 
+
 def render_home(collapsed):
     pagecontent_class = "page-content collapsed" if collapsed else "page-content"
     # Zone avec les 4 blocs horizontaux
@@ -12,20 +13,26 @@ def render_home(collapsed):
                     html.Div(
                         [
                             html.I(className="fas fa-bolt", style={"fontSize": "2rem", "color": "#4CAF50"}),  # Icône
-                            html.P("Consommation", style={"margin": "0", "fontWeight": "bold", "textAlign": "left"})  # Texte
+                            html.P(
+                                "Consommation",
+                                style={"margin": "0", "fontWeight": "bold", "textAlign": "left"}
+                            )  # Texte
                         ],
-                        style={"display": "flex", "alignItems": "center"}  
+                        style={"display": "flex", "alignItems": "center"}
                     )
                 ],
                 className="stat-block"
             ),
             html.Div(
-                [   
+                [
                     html.P("75%", className="stat-value-yellow", style={"margin": "0", "textAlign": "center"}),
                     html.Div(
                         [
                             html.I(className="fas fa-wind", style={"fontSize": "2rem", "color": "#FFC107"}),
-                            html.P("Énergie renouvelable", style={"margin": "0", "fontWeight": "bold", "textAlign": "left"})
+                            html.P(
+                                "Énergie renouvelable",
+                                style={"margin": "0", "fontWeight": "bold", "textAlign": "left"}
+                            )
                         ],
                         style={"display": "flex", "alignItems": "center"}
                     )
@@ -33,15 +40,19 @@ def render_home(collapsed):
                 className="stat-block"
             ),
             html.Div(
-                [   html.P("30kg", className="stat-value-orange", style={"margin": "0", "textAlign": "center"}),
+                [
+                    html.P("30kg", className="stat-value-orange", style={"margin": "0", "textAlign": "center"}),
                     html.Div(
                         [
                             html.I(className="fas fa-cloud", style={"fontSize": "2rem", "color": "#FF8C00"}),
-                            html.P("Émissions CO2", style={"margin": "0", "fontWeight": "bold", "textAlign": "left"})
+                            html.P(
+                                "Émissions CO2",
+                                style={"margin": "0", "fontWeight": "bold", "textAlign": "left"}
+                            )
                         ],
                         style={"display": "flex", "alignItems": "center"}
                     )
-                   
+
                 ],
                 className="stat-block"
             ),
@@ -51,7 +62,10 @@ def render_home(collapsed):
                     html.Div(
                         [
                             html.I(className="fas fa-seedling", style={"fontSize": "2rem", "color": "#FF4B4B"}),
-                            html.P("Impact environnemental", style={"margin": "0", "fontWeight": "bold", "textAlign": "left"})
+                            html.P(
+                                "Impact environnemental",
+                                style={"margin": "0", "fontWeight": "bold", "textAlign": "left"}
+                            )
                         ],
                         style={"display": "flex", "alignItems": "center"}
                     )
@@ -61,8 +75,6 @@ def render_home(collapsed):
         ],
         className="stats-section"
     )
-
-
 
     # Zone de texte avec une colonne pour le texte à gauche et une colonne pour la vidéo à droite
     text_section = html.Div(
@@ -79,7 +91,7 @@ def render_home(collapsed):
                 ],
                 className="text-section-left"  # Style pour la colonne gauche
             ),
-            
+
             # Colonne de vidéo à droite
             html.Div(
                 [
@@ -94,7 +106,6 @@ def render_home(collapsed):
         ],
         className="text-video-section"  # Conteneur principal pour les deux colonnes
     )
-
 
     # Assemblage de la page
     return html.Div(

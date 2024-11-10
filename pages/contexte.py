@@ -3,21 +3,7 @@ from dash import dash_table
 import pandas as pd
 from components.kpi import render_kpi
 from components.filters import render_dropdown
-from config import app, DATASET
-import flask_caching 
-
-# Initialize cache
-cache = flask_caching.Cache(app.server, config={
-    'CACHE_TYPE': 'simple',
-    'CACHE_DEFAULT_TIMEOUT': 300
-})
-
-# Load data and cache it
-@cache.memoize()
-def load_data():
-    data = pd.read_csv(DATASET, sep=';')
-    # data = data.groupby('Periode_construction').sample(frac=0.1, random_state=1)  # Adjust the fraction as needed
-    return data
+from config import app, load_data
 
 data_concated = load_data()
 
@@ -31,15 +17,30 @@ def render_contexte(collapsed):
     # KPI Section
     kpi_section = html.Div(
         [
-            render_kpi("Total des logements", f"{data_concated.shape[0]}", color="linear-gradient(135deg, #4CAF50, #81C784)", icon_class="fas fa-tags",),
-            render_kpi("Consommation Énergétique Totale Moyenne", f"{round(data_concated['Coût_total_5_usages'].mean(), 2)} €", color="linear-gradient(135deg, #FFC107, #FFD54F)", icon_class="fas fa-calendar-alt"),
+            render_kpi(
+                "Total des logements",
+                f"{data_concated.shape[0]}",
+                color="linear-gradient(135deg, #4CAF50, #81C784)",
+                icon_class="fas fa-tags",
+            ),
+            render_kpi(
+                "Consommation Énergétique Totale Moyenne",
+                f"{round(data_concated['Coût_total_5_usages'].mean(), 2)} €",
+                color="linear-gradient(135deg, #FFC107, #FFD54F)",
+                icon_class="fas fa-calendar-alt"
+            ),
             render_kpi(
                 "Surface habitable moyenne",
                 f"{round(data_concated['Surface_habitable_logement'].mean(), 2)} m²",
                 color="linear-gradient(135deg, #FF8C00, #FFA726)",
                 icon_class="fas fa-home"
             ),
-            render_kpi("Coût moyen de chauffage", f"{round(data_concated['Coût_chauffage'].mean(), 2)} €", color="linear-gradient(135deg, #FF4B4B, #E57373)", icon_class="fas fa-euro-sign"),
+            render_kpi(
+                "Coût moyen de chauffage",
+                f"{round(data_concated['Coût_chauffage'].mean(), 2)} €",
+                color="linear-gradient(135deg, #FF4B4B, #E57373)",
+                icon_class="fas fa-euro-sign"
+            ),
         ],
         className="kpi-section"
     )
@@ -48,13 +49,28 @@ def render_contexte(collapsed):
     filters_section = html.Div(
         [
             html.H3("Filtres rapides :"),
-            
+
             # Conteneur des filtres avec une disposition flex
             html.Div(
                 [
-                    render_dropdown("filter-periode-construction", periode_construction_options, label="Période de construction", multi=True),
-                    render_dropdown("filter-DPE", dpe_options, label="Etiquette DPE", multi=True),
-                    render_dropdown("filter-type-batiment", type_batiment_options, label="Type de Bâtiment", multi=True),
+                    render_dropdown(
+                        "filter-periode-construction",
+                        periode_construction_options,
+                        label="Période de construction",
+                        multi=True
+                    ),
+                    render_dropdown(
+                        "filter-DPE",
+                        dpe_options,
+                        label="Etiquette DPE",
+                        multi=True
+                    ),
+                    render_dropdown(
+                        "filter-type-batiment",
+                        type_batiment_options,
+                        label="Type de Bâtiment",
+                        multi=True
+                    ),
                     # Ajoutez un bouton si nécessaire
                     # html.Button("Appliquer les filtres", id="apply-filters-button", className="apply-filters-button")
                 ],
@@ -64,9 +80,7 @@ def render_contexte(collapsed):
         className="filter-section"
     )
 
-
-    # Data Table Section
-  # Data Table Section avec export CSV
+    # Data Table Section avec export CSV
     data_table_section = html.Div(
         [
             html.H3("Tableau des données :"),
@@ -136,7 +150,6 @@ def render_contexte(collapsed):
     Input("export-csv-button", "n_clicks"),
     prevent_initial_call=True,
 )
-
 def export_data_as_csv(n_clicks):
     # Convertir les données en CSV
     return dcc.send_data_frame(data_concated.to_csv, "data_export.csv")
@@ -145,9 +158,11 @@ def export_data_as_csv(n_clicks):
 @app.callback(
     Output('data-table', 'data'),
     # Input('apply-filters-button', 'n_clicks'),
-    [Input('filter-periode-construction', 'value'),
-     Input('filter-DPE', 'value'),
-     Input('filter-type-batiment', 'value')]
+    [
+        Input('filter-periode-construction', 'value'),
+        Input('filter-DPE', 'value'),
+        Input('filter-type-batiment', 'value')
+    ]
 )
 def update_table(selected_periode, selected_dpe, selected_type_batiment):
     filtered_data = data_concated

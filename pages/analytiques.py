@@ -1,32 +1,19 @@
+import dash
 import pandas as pd
 from dash import html, dcc, Input, Output, State
-from config import app, DATA_DIR, ADDRESSES_FILE, ENERGY_DATA_FILE, DATASET
+from config import app, load_data
 import plotly.io as pio
-import io
-import base64
-import dash
 import pickle
 from sklearn.linear_model import LinearRegression
-from flask_caching import Cache
-
-# Set up cache
-cache = Cache(app.server, config={
-    'CACHE_TYPE': 'simple',
-    'CACHE_DEFAULT_TIMEOUT': 300
-})
-
-@cache.memoize()
-def load_data():
-    data = pd.read_csv(DATASET, sep=';', dtype={'Isolation_toiture_(0/1)': 'str'}, low_memory=False)
-    return data
 
 data_energy = load_data()
-communes = ['All'] + data_energy['nom_commune'].unique().tolist()
+communes = ['All'] + [str(commune) for commune in data_energy['nom_commune'].unique().tolist()]
 
-# Precompute filtered datasets and store in cache
-@cache.memoize()
-def get_filtered_data(etiquette_dpe):
-    return data_energy[data_energy["Etiquette_DPE"].isin(etiquette_dpe)]
+def get_filtered_data(etiquette_dpe, communes_selected):
+    filtered_data = data_energy[data_energy["Etiquette_DPE"].isin(etiquette_dpe)]
+    if communes_selected and 'All' not in communes_selected:
+        filtered_data = filtered_data[filtered_data['nom_commune'].isin(communes_selected)]
+    return filtered_data
 
 def render_analytiques(collapsed):
     etiquettes_dpe = data_energy["Etiquette_DPE"].sort_values().unique()
@@ -79,7 +66,7 @@ def render_analytiques(collapsed):
                                 html.Div(
                                     children=[
                                         html.Div(children="Commune", className="menu-title"),
-                                        dcc.Dropdown(
+                                       dcc.Dropdown(
                                             id='commune-filter',
                                             options=[{'label': commune, 'value': commune} for commune in communes],
                                             value=['Lyon 8e Arrondissement'],
@@ -132,12 +119,8 @@ def render_analytiques(collapsed):
     [Input("etiquette-dpe-filter", "value"),
      Input("commune-filter", "value")]
 )
-
 def update_charts(etiquette_dpe, communes_selected):
-    filtered_data = get_filtered_data(tuple(etiquette_dpe))
-    
-    if communes_selected and 'All' not in communes_selected:
-        filtered_data = filtered_data[filtered_data['nom_commune'].isin(communes_selected)]
+    filtered_data = get_filtered_data(tuple(etiquette_dpe), tuple(communes_selected))
     
     colors = {
         "A": "#009639",
