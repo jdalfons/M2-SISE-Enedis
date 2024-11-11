@@ -1,7 +1,7 @@
 """
 This module provides a FastAPI application for predicting energy consumption.
 """
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel
 from config import REG_MODEL_PATH
 import joblib
@@ -63,10 +63,52 @@ def predict_from_df(df: pd.DataFrame):
 
     return y_pred[0]
 
-
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    data = """<?xml version="1.0"?>
+    <api>
+        <message>Welcome to the Energy Consumption Prediction API</message>
+        <endpoints>
+            <predict_consomation>
+                <description>Predict energy consumption</description>
+                <title>API predict consumption</title>
+                <content>To send a request to the API, you can use the following example with `curl`:</content>
+                <example_sh>
+
+                    curl -X POST "http://127.0.0.1:8000/predict_consomation" -H "Content-Type: application/json" -d '{
+                    "etiquette_dpe": 3.0,
+                    "type_batiment": 0.0,
+                    "annee_construction": 1921.0,
+                    "classe_inertie_batiment": 1.0,
+                    "hauteur_sous_plafond": 3.1,
+                    "surface_habitable_logement": 50.2,
+                    "type_energie_principale_chauffage": 11.0,
+                    "isolation_toiture": 1.0,
+                    "code_postal_ban": 69002.0
+                    }'
+                </example_sh>
+            </predict_consomation>
+            <predict_label>
+                <description>Predict energy label</description>
+                <title>API predict label</title>
+                <content>To send a request to the API, you can use the following example with `curl`:</content>
+                <example_sh>
+                    curl -X POST "http://127.0.0.1:8000/predict_label" -H "Content-Type: application/json" -d '{
+                        "annee_construction": 1948,
+                        "surface_habitable_logement": 197.5,
+                        "cout_total_5_usages": 4415.2,
+                        "cout_ecs": 409,
+                        "cout_chauffage": 3937.8,
+                        "cout_eclairage": 60.4,
+                        "cout_auxiliaires": 5.0,
+                        "cout_refroidissement": 0.0
+
+                </example_sh>
+            </predict_label>
+        </endpoints>
+    </api>
+    """
+    return Response(content=data, media_type="application/xml")
 
 @app.post("/predict_label", response_model=PredictionClassifOutput)
 def predict_label(input_dict: dict):

@@ -16,6 +16,11 @@
 M2-Enedis is a dashboard application built using Dash and Plotly. It provides various functionalities including data visualization, machine learning predictions, and interactive maps. The application is designed to help users understand and analyze energy consumption data.
 
 
+## Before install
+
+Ensure you have the latest data in the `dataset` folder. If the repository does not contain the latest version, you can download it from the following URL: [Download Latest Dataset](https://drive.google.com/file/d/1Y5EPyN07dRrQ9i70DckcayalByRuakpq/view?usp=sharing)
+
+
 ## Installation
 
 1. **Clone the repository:**
@@ -56,6 +61,8 @@ M2-Enedis is a dashboard application built using Dash and Plotly. It provides va
 
 ## Example API Request
 
+#### Api predict consumption
+
 To send a request to the API, you can use the following example with `curl`:
 
 ```sh
@@ -69,6 +76,21 @@ curl -X POST "http://127.0.0.1:8000/predict_consomation" -H "Content-Type: appli
   "type_energie_principale_chauffage": 11.0,
   "isolation_toiture": 1.0,
   "code_postal_ban": 69002.0
+}'
+```
+
+#### Api predict label
+
+```sh
+curl -X POST "http://127.0.0.1:8000/predict_label" -H "Content-Type: application/json" -d '{
+    "annee_construction": 1948,
+    "surface_habitable_logement": 197.5,
+    "cout_total_5_usages": 4415.2,
+    "cout_ecs": 409,
+    "cout_chauffage": 3937.8,
+    "cout_eclairage": 60.4,
+    "cout_auxiliaires": 5.0,
+    "cout_refroidissement": 0.0
 }'
 ```
 
