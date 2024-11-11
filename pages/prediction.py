@@ -322,8 +322,7 @@ def predict_etiquette(n_clicks, nom_du_bien, annee_construction_label, surface_h
         missing_fields.append("Coût refroidissement")
 
     if missing_fields:
-        return (f"Erreur: Veuillez remplir tous les champs pour obtenir une prédiction. "
-                f"Champs manquants: {', '.join(missing_fields)}", 
+        return (html.Ul([html.Li(f"{field}") for field in missing_fields], style={'color': 'red'}), 
                 {'opacity': 1, 'transition': 'opacity 0.5s ease-in-out'})
 
     data = pd.DataFrame({
@@ -392,8 +391,7 @@ def predict_consumption(n_clicks, type_batiment, hauteur_plafond, etiquette_dpe,
         missing_fields.append("Classe inertie bâtiment")
 
     if missing_fields:
-        return (f"Erreur: Veuillez remplir tous les champs pour obtenir une prédiction. "
-                f"Champs manquants: {', '.join(missing_fields)}", 
+        return (html.Ul([html.Li(html.B(field)) for field in missing_fields], style={'color': 'red'}), 
                 {'opacity': 1, 'transition': 'opacity 0.5s ease-in-out'})
 
     # Préparation des données pour la prédiction
