@@ -45,7 +45,7 @@ def render_home(collapsed):
     [   
         html.Div(
             [
-                html.Img(src="url_photo_juan.jpg", className="stat-photo"),  # Espace pour la photo
+                html.Img(src="/assets/url_photo_juan.jpg", className="stat-photo"),  # Espace pour la photo
                 html.P("JUAN", className="stat-value-green", style={"margin": "0", "textAlign": "center"}),
                 
             ],
@@ -53,7 +53,7 @@ def render_home(collapsed):
         ),
         html.Div(
             [
-                html.Img(src="url_photo_pierre.jpg", className="stat-photo"),  # Espace pour la photo
+                html.Img(src="/assets/url_photo_pierre.jpg", className="stat-photo"),  # Espace pour la photo
                 html.P("PIERRE", className="stat-value-yellow", style={"margin": "0", "textAlign": "center"}),
              
             ],
@@ -61,7 +61,7 @@ def render_home(collapsed):
         ),
         html.Div(
             [
-                html.Img(src="url_photo_bertrand.jpg", className="stat-photo"),  # Espace pour la photo
+                html.Img(src="/assets/url_photo_bertrand.jpg", className="stat-photo"),  # Espace pour la photo
                 html.P("BERTRAND", className="stat-value-orange", style={"margin": "0", "textAlign": "center"}),
                
             ],
@@ -69,7 +69,7 @@ def render_home(collapsed):
         ),
         html.Div(
             [
-                html.Img(src="url_photo_souraya.jpg", className="stat-photo"),  # Espace pour la photo
+                html.Img(src="/assets/url_photo_souraya.jpeg", className="stat-photo"),  # Espace pour la photo
                 html.P("SOURAYA", className="stat-value-red", style={"margin": "0", "textAlign": "center"}),
                
             ],
