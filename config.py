@@ -30,7 +30,8 @@ def load_data():
     """
     Load data from the dataset URL.
     """
-    data = pd.read_csv(DATASET, sep=';', low_memory=False)
+    data = pd.read_csv(DATASET, low_memory=False)
+    data = data.sample(frac=0.1, random_state=1)
     return data
 
 app = Flask(__name__)
