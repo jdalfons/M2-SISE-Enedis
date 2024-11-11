@@ -10,10 +10,11 @@
 |-----------------------|--------------------------------------|
 | **Current Version**   | 1.0.0                                |
 | **Python Version**    | 3.11                                 |
-
 ## Overview
 
 M2-Enedis is a dashboard application built using Dash and Plotly. It provides various functionalities including data visualization, machine learning predictions, and interactive maps. The application is designed to help users understand and analyze energy consumption data.
+
+You can see an explanation of the application in the following video: [Watch Video](https://youtu.be/TH3bm7r2nYE)
 
 
 ## Before install
