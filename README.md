@@ -26,8 +26,8 @@ Ensure you have the latest data in the `dataset` folder. If the repository does 
 
 1. **Clone the repository:**
     ```sh
-    git clone https://github.com/yourusername/greentech_dashboard.git
-    cd greentech_dashboard
+    git clone https://github.com/jdalfons/M2-SISE-Enedis.git
+    cd M2-SISE-Enedis
     ```
 
 2. **Create a virtual environment:**
