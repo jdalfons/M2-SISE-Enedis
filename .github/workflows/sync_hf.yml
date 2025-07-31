@@ -21,7 +21,15 @@ jobs:
           git lfs install
       - name: Configure Git LFS
         run: git config lfs.allowincompletepush true
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push https://jdalfonso:$HF_TOKEN@huggingface.co/spaces/jdalfonso/M2-SISE-ENEDIS main
+        run: |
+          git remote add hf https://jdalfonso:$HF_TOKEN@huggingface.co/spaces/jdalfonso/M2-SISE-ENEDIS
+          git fetch hf main || true
+          git merge hf/main --allow-unrelated-histories --no-edit || true
+          git push hf main
